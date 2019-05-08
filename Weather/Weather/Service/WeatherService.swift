@@ -10,11 +10,19 @@ import Foundation
 
 protocol WeatherServiceSpec {
     func downloadWeather(cityName: String, completion: @escaping (Weather?, Error?) -> Void)
+    func downloadPollution(latitude: String, longitude: String, completion: @escaping (Pollution?, Error?) -> Void)
+
 }
 
 class WeatherService: Service, WeatherServiceSpec {
     
     func downloadWeather(cityName: String, completion: @escaping (Weather?, Error?) -> Void) {
+        
         request(.currentWeather(cityName), compltion: completion)
+    }
+    
+    func downloadPollution(latitude: String, longitude: String, completion: @escaping (Pollution?, Error?) -> Void) {
+        
+        request(.pollution(latitude, longitude), compltion: completion)
     }
 }

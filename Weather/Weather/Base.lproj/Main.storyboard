@@ -29,9 +29,9 @@
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="i7v-yQ-wDb">
                                 <rect key="frame" x="191.5" y="498" width="31" height="30"/>
-                                <state key="normal" title="確認"/>
+                                <state key="normal" title="溫度"/>
                                 <connections>
-                                    <action selector="tapConfirmBtn:" destination="BYZ-38-t0r" eventType="touchUpInside" id="34t-hC-uzu"/>
+                                    <action selector="tapTemperatureBtn:" destination="BYZ-38-t0r" eventType="touchUpInside" id="34t-hC-uzu"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Service Practice " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="adP-1u-GfK">
@@ -40,12 +40,21 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hf1-AL-c14">
+                                <rect key="frame" x="176" y="543" width="62" height="30"/>
+                                <state key="normal" title="空氣污染"/>
+                                <connections>
+                                    <action selector="tapPollutionBtn:" destination="BYZ-38-t0r" eventType="touchUpInside" id="T7f-ZQ-4Wi"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="hf1-AL-c14" firstAttribute="centerX" secondItem="i7v-yQ-wDb" secondAttribute="centerX" id="51H-Uk-J7c"/>
                             <constraint firstItem="7IR-nq-cPk" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="BLG-Dl-pRf"/>
                             <constraint firstItem="adP-1u-GfK" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="JWo-AR-oic"/>
                             <constraint firstItem="7IR-nq-cPk" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Lf4-3Q-NKJ"/>
+                            <constraint firstItem="hf1-AL-c14" firstAttribute="top" secondItem="i7v-yQ-wDb" secondAttribute="bottom" constant="15" id="QL7-7e-cbR"/>
                             <constraint firstItem="i7v-yQ-wDb" firstAttribute="top" secondItem="7IR-nq-cPk" secondAttribute="bottom" constant="35" id="Yif-Kx-ESM"/>
                             <constraint firstItem="i7v-yQ-wDb" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="nF4-rO-tWS"/>
                             <constraint firstItem="adP-1u-GfK" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="88" id="sWY-JZ-BqQ"/>

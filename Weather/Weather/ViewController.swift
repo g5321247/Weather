@@ -12,7 +12,7 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var tfCityName: UITextField!
     
-    @IBAction func tapConfirmBtn(_ sender: UIButton) {
+    @IBAction func tapTemperatureBtn(_ sender: UIButton) {
         guard let cityName = tfCityName.text else {
             #warning("Show Error")
             return
@@ -20,7 +20,19 @@ class ViewController: UIViewController {
         
         let vc = WeatherViewController(nibName: String(describing: WeatherViewController.self), bundle: nil)
         
-        vc.inject(cityName: cityName)
+        vc.inject(cityName: cityName, type: .currentWeather)
+        show(vc, sender: nil)
+    }
+    
+    @IBAction func tapPollutionBtn(_ sender: UIButton) {
+        guard let cityName = tfCityName.text else {
+            #warning("Show Error")
+            return
+        }
+        
+        let vc = WeatherViewController(nibName: String(describing: WeatherViewController.self), bundle: nil)
+        
+        vc.inject(cityName: cityName, type: .airPollution)
         show(vc, sender: nil)
     }
     

@@ -49,6 +49,7 @@ extension ServiceSpec where Self: Service {
                 
                 do {
                     let result = try self.decoder.decode(T.self, from: data)
+                    print(result)
                     compltion(result, nil)
                 } catch {
                     compltion(nil, NetworkError.jsonParsingFailure)

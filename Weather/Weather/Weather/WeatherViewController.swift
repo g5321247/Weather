@@ -8,6 +8,11 @@
 
 import UIKit
 
+enum WeatherType {
+    case currentWeather
+    case airPollution
+}
+
 class WeatherViewController: UIViewController {
 
     @IBOutlet weak var llCityName: UILabel!
@@ -22,9 +27,9 @@ class WeatherViewController: UIViewController {
         viewModel.inputs.searchCityWeather()
     }
 
-    func inject(cityName: String) {
+    func inject(cityName: String, type: WeatherType) {
         let service = WeatherService()
-        viewModel = WeatherViewModel(service: service, cityName: cityName)
+        viewModel = WeatherViewModel(service: service, cityName: cityName, type: type)
     }
     
     private func bindViewModel() {
@@ -32,11 +37,18 @@ class WeatherViewController: UIViewController {
         
         outputs.error = { [weak self] (error) in
             #warning("Error handling")
+            self?.llCityName.text = "有 Error"
+            self?.llTemperature.text = "但我還沒做 handle"
         }
         
         outputs.weather = { [weak self] (weather) in
             self?.llCityName.text = "城市：" + weather.name
             self?.llTemperature.text = "溫度：" + String(weather.main.temp)
+        }
+        
+        outputs.pollution = { [weak self] (pollution) in
+            self?.llCityName.text = "污染：" + String(pollution.pressure)
+            self?.llTemperature.text = ""
         }
     }
 }

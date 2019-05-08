@@ -26,6 +26,7 @@ protocol URLRequestConvertible {
 
 enum Router {
     case currentWeather(String)
+    case pollution(String,String)
 }
 
 extension Router: URLRequestConvertible {
@@ -38,12 +39,14 @@ extension Router: URLRequestConvertible {
         switch self {
         case .currentWeather:
             return "/data/2.5/weather"
+        case .pollution(let lat, let lon):
+            return "/pollution/v1/co/0.0,10.0/current.json"
         }
     }
     
     var method: APIMethod {
         switch self {
-        case .currentWeather:
+        case .currentWeather, .pollution:
             return .get
         }
     }
@@ -55,10 +58,12 @@ extension Router: URLRequestConvertible {
     var parameters: [String : Any] {
         var params: [String: Any] = [:]
         params["APPID"] = "43d848999087841b1476fb020ee1d2f8"
-        
+
         switch self {
         case .currentWeather(let city):
             params["q"] = city
+        case .pollution:
+            break
         }
         
         return params
