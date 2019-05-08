@@ -8,10 +8,6 @@
 
 import Foundation
 
-struct Pollution: Codable {
-    let data: [Datum]
-}
-
-struct Datum: Codable {
-    let pressure: Double
+struct UV: Codable {
+    let value: Double
 }

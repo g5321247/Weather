@@ -10,7 +10,7 @@ import Foundation
 
 protocol WeatherServiceSpec {
     func downloadWeather(cityName: String, completion: @escaping (Weather?, Error?) -> Void)
-    func downloadPollution(latitude: String, longitude: String, completion: @escaping (Pollution?, Error?) -> Void)
+    func downloadUVValue(latitude: String, longitude: String, completion: @escaping (UV?, Error?) -> Void)
 
 }
 
@@ -21,8 +21,8 @@ class WeatherService: Service, WeatherServiceSpec {
         request(.currentWeather(cityName), compltion: completion)
     }
     
-    func downloadPollution(latitude: String, longitude: String, completion: @escaping (Pollution?, Error?) -> Void) {
+    func downloadUVValue(latitude: String, longitude: String, completion: @escaping (UV?, Error?) -> Void) {
         
-        request(.pollution(latitude, longitude), compltion: completion)
+        request(.uvValue(latitude, longitude), compltion: completion)
     }
 }

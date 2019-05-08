@@ -24,7 +24,7 @@ class ViewController: UIViewController {
         show(vc, sender: nil)
     }
     
-    @IBAction func tapPollutionBtn(_ sender: UIButton) {
+    @IBAction func tapUVValueBtn(_ sender: UIButton) {
         guard let cityName = tfCityName.text else {
             #warning("Show Error")
             return
@@ -32,7 +32,7 @@ class ViewController: UIViewController {
         
         let vc = WeatherViewController(nibName: String(describing: WeatherViewController.self), bundle: nil)
         
-        vc.inject(cityName: cityName, type: .airPollution)
+        vc.inject(cityName: cityName, type: .uvValue)
         show(vc, sender: nil)
     }
     

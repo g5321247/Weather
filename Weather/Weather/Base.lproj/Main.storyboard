@@ -41,10 +41,10 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hf1-AL-c14">
-                                <rect key="frame" x="176" y="543" width="62" height="30"/>
-                                <state key="normal" title="空氣污染"/>
+                                <rect key="frame" x="179" y="543" width="56" height="30"/>
+                                <state key="normal" title="UV 指數"/>
                                 <connections>
-                                    <action selector="tapPollutionBtn:" destination="BYZ-38-t0r" eventType="touchUpInside" id="T7f-ZQ-4Wi"/>
+                                    <action selector="tapUVValueBtn:" destination="BYZ-38-t0r" eventType="touchUpInside" id="T7f-ZQ-4Wi"/>
                                 </connections>
                             </button>
                         </subviews>

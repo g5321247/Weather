@@ -15,7 +15,7 @@ protocol WeatherViewModelInputs {
 
 protocol WeatherViewModelOutputs {
     var weather: ((Weather) -> Void)? { get set }
-    var pollution: ((Datum) -> Void)? { get set }
+    var pollution: ((UV) -> Void)? { get set }
     var error: ((Error) -> Void)? { get set }
 }
 
@@ -27,7 +27,7 @@ class WeatherViewModel: WeatherViewModelInputs, WeatherViewModelOutputs {
     // MARK: - ViewModelOutputParameter
     var weather: ((Weather) -> Void)?
     var error: ((Error) -> Void)?
-    var pollution: ((Datum) -> Void)?
+    var pollution: ((UV) -> Void)?
 
     // MARK: - Private Varible
     private let service: WeatherServiceSpec
@@ -46,7 +46,7 @@ class WeatherViewModel: WeatherViewModelInputs, WeatherViewModelOutputs {
         switch type {
         case .currentWeather:
             downloadCurrentWeather()
-        case .airPollution:
+        case .uvValue:
             downloadAirPollution()
         }
     }
@@ -66,19 +66,22 @@ class WeatherViewModel: WeatherViewModelInputs, WeatherViewModelOutputs {
     
     private func downloadAirPollution() {
         getCoordinateFrom(address: cityName) { [weak self] coordinate, error in
-            guard let coordinate = coordinate, error == nil else { return }
+            guard let coordinate = coordinate, error == nil else {
+                self?.error?(error!)
+                return
+            }
             
             let latitude = String(format: "%.2f", coordinate.latitude)
             let longitude = String(format: "%.2f", coordinate.longitude)
             
-            self?.service.downloadPollution(latitude: latitude, longitude: longitude, completion: { (pollution, error) in
+            self?.service.downloadUVValue(latitude: latitude, longitude: longitude, completion: { (uv, error) in
                 
                 DispatchQueue.main.async {
-                    guard let pollution = pollution, let data = pollution.data.first else {
+                    guard let uv = uv else {
                         self?.error?(error!)
                         return
                     }
-                    self?.pollution?(data)
+                    self?.pollution?(uv)
                 }
             })
         }

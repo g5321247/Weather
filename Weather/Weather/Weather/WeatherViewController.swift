@@ -10,7 +10,7 @@ import UIKit
 
 enum WeatherType {
     case currentWeather
-    case airPollution
+    case uvValue
 }
 
 class WeatherViewController: UIViewController {
@@ -46,8 +46,8 @@ class WeatherViewController: UIViewController {
             self?.llTemperature.text = "溫度：" + String(weather.main.temp)
         }
         
-        outputs.pollution = { [weak self] (pollution) in
-            self?.llCityName.text = "污染：" + String(pollution.pressure)
+        outputs.pollution = { [weak self] (uv) in
+            self?.llCityName.text = "UV 指數：" + String(uv.value)
             self?.llTemperature.text = ""
         }
     }

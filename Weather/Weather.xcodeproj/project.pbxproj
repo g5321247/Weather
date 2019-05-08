@@ -21,7 +21,7 @@
 		C81205752281556B00612003 /* WeatherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C81205742281556B00612003 /* WeatherService.swift */; };
 		C81205782281561300612003 /* Service.swift in Sources */ = {isa = PBXBuildFile; fileRef = C81205772281561300612003 /* Service.swift */; };
 		C897D8212282A6F700ACB66B /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = C897D8202282A6F700ACB66B /* Router.swift */; };
-		C897D8232282E72500ACB66B /* Pollution.swift in Sources */ = {isa = PBXBuildFile; fileRef = C897D8222282E72500ACB66B /* Pollution.swift */; };
+		C897D8232282E72500ACB66B /* UV.swift in Sources */ = {isa = PBXBuildFile; fileRef = C897D8222282E72500ACB66B /* UV.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,7 +62,7 @@
 		C81205742281556B00612003 /* WeatherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherService.swift; sourceTree = "<group>"; };
 		C81205772281561300612003 /* Service.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Service.swift; sourceTree = "<group>"; };
 		C897D8202282A6F700ACB66B /* Router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
-		C897D8222282E72500ACB66B /* Pollution.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pollution.swift; sourceTree = "<group>"; };
+		C897D8222282E72500ACB66B /* UV.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UV.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,7 +94,7 @@
 			isa = PBXGroup;
 			children = (
 				4B9A110F2282B61300ED3AFD /* Weather.swift */,
-				C897D8222282E72500ACB66B /* Pollution.swift */,
+				C897D8222282E72500ACB66B /* UV.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -309,7 +309,7 @@
 				C812054222814FAC00612003 /* ViewController.swift in Sources */,
 				C81205712281539300612003 /* WeatherViewController.swift in Sources */,
 				C897D8212282A6F700ACB66B /* Router.swift in Sources */,
-				C897D8232282E72500ACB66B /* Pollution.swift in Sources */,
+				C897D8232282E72500ACB66B /* UV.swift in Sources */,
 				C812056E2281517500612003 /* WeatherViewModel.swift in Sources */,
 				C812054022814FAC00612003 /* AppDelegate.swift in Sources */,
 				C81205782281561300612003 /* Service.swift in Sources */,
