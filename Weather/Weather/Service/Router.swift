@@ -26,7 +26,7 @@ protocol URLRequestConvertible {
 
 enum Router {
     case currentWeather(String)
-    case uvValue(String,String)
+    case uvValue(String, String)
 }
 
 extension Router: URLRequestConvertible {
@@ -39,7 +39,7 @@ extension Router: URLRequestConvertible {
         switch self {
         case .currentWeather:
             return "/data/2.5/weather"
-        case .uvValue(let lat, let lon):
+        case .uvValue:
             return "/data/2.5/uvi"
         }
     }

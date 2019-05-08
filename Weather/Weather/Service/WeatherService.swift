@@ -14,15 +14,25 @@ protocol WeatherServiceSpec {
 
 }
 
-class WeatherService: Service, WeatherServiceSpec {
+class WeatherService: WeatherServiceSpec {
+    
+    private let service: WebRequestSpec
+    
+    init(service: WebRequestSpec = WebRequest()) {
+        self.service = service
+    }
     
     func downloadWeather(cityName: String, completion: @escaping (Weather?, Error?) -> Void) {
+        let router: Router = .currentWeather(cityName)
+        let request = try? router.getRequest()
         
-        request(.currentWeather(cityName), compltion: completion)
+        service.request(request: request!, compltion: completion)
     }
     
     func downloadUVValue(latitude: String, longitude: String, completion: @escaping (UV?, Error?) -> Void) {
+        let router: Router = .uvValue(latitude, longitude)
+        let request = try? router.getRequest()
         
-        request(.uvValue(latitude, longitude), compltion: completion)
+        service.request(request: request!, compltion: completion)
     }
 }

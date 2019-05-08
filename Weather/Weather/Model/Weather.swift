@@ -8,7 +8,11 @@
 
 import Foundation
 
-struct Weather: Codable {
+struct Weather: Codable, Equatable {
+    static func == (lhs: Weather, rhs: Weather) -> Bool {
+        return true
+    }
+    
     let main: Main
     let name: String
     let cod: Int
