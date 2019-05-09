@@ -11,7 +11,7 @@ import XCTest
 
 class WebRequestTests: XCTestCase {
     
-    var webRequest: WebRequestSpec!
+    var webRequest: WebRequest!
     let session = MockURLSession()
     
     override func setUp() {
@@ -26,7 +26,7 @@ class WebRequestTests: XCTestCase {
         let url = URL(string: "www.google.com")!
         let request = URLRequest(url: url)
         
-        webRequest.request(request: request) { (_: Data?, _) in}
+        webRequest.sendRequest(request: request) { (_: Data?, _) in}
         
         XCTAssert(session.request!.url == url)
     }
@@ -35,7 +35,7 @@ class WebRequestTests: XCTestCase {
         let url = URL(string: "www.google.com")!
         let request = URLRequest(url: url)
         
-        webRequest.request(request: request) { (_: Data?, _) in}
+        webRequest.sendRequest(request: request) { (_: Data?, _) in}
 
         XCTAssert(session.request!.httpMethod == APIMethod.get.rawValue)
     }
@@ -44,7 +44,7 @@ class WebRequestTests: XCTestCase {
         let url = URL(string: "www.google.com")!
         let request = URLRequest(url: url)
         
-        webRequest.request(request: request) { (_: Data?, _) in}
+        webRequest.sendRequest(request: request) { (_: Data?, _) in}
         
         XCTAssertTrue(session.nextDataTask.isCalled)
     }
@@ -60,7 +60,7 @@ class WebRequestTests: XCTestCase {
         
         var acutalModel: Weather?
         
-        webRequest.request(request: request) { model, _ in
+        webRequest.sendRequest(request: request) { model, _ in
             acutalModel = model
         }
         
@@ -76,7 +76,7 @@ class WebRequestTests: XCTestCase {
         
         var actualError: NetworkError?
         
-        webRequest.request(request: request) { (model: UV?, error) in
+        webRequest.sendRequest(request: request) { (model: UV?, error) in
             actualError = error as? NetworkError
         }
         
@@ -92,7 +92,7 @@ class WebRequestTests: XCTestCase {
         
         var actualError: NetworkError?
         
-        webRequest.request(request: request) { (_: Data?, error) in
+        webRequest.sendRequest(request: request) { (_: Data?, error) in
             actualError = error as? NetworkError
         }
         
@@ -107,7 +107,7 @@ class WebRequestTests: XCTestCase {
         let expectedError = NSError(domain: "error", code: 0, userInfo: nil)
         session.nextError = expectedError
         
-        webRequest.request(request: request) { (_: Data?, error) in
+        webRequest.sendRequest(request: request) { (_: Data?, error) in
             XCTAssert(error! as NSError == expectedError)
         }
     }
@@ -121,7 +121,7 @@ class WebRequestTests: XCTestCase {
         
         var actualError: NetworkError?
         
-        webRequest.request(request: request) { (_: Data?, error) in
+        webRequest.sendRequest(request: request) { (_: Data?, error) in
             actualError = error as? NetworkError
         }
         XCTAssert(actualError! == NetworkError.responseUnsuccessful(statusCode: 199))
@@ -134,7 +134,7 @@ class WebRequestTests: XCTestCase {
         session.nextResponse = HTTPURLResponse(statusCode: 300)
         var actualError: NetworkError?
         
-        webRequest.request(request: request) { (_: Data?, error) in
+        webRequest.sendRequest(request: request) { (_: Data?, error) in
             actualError = error as? NetworkError
         }
         XCTAssert(actualError! == NetworkError.responseUnsuccessful(statusCode: 300))
@@ -147,7 +147,7 @@ class WebRequestTests: XCTestCase {
         session.nextResponse = nil
         var actualError: NetworkError?
         
-        webRequest.request(request: request) { (_: Data?, error) in
+        webRequest.sendRequest(request: request) { (_: Data?, error) in
             actualError = error as? NetworkError
         }
         XCTAssert(actualError! == NetworkError.requestFailed)

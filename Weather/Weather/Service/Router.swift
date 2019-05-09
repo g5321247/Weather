@@ -8,20 +8,12 @@
 
 import Foundation
 
-enum RouterError: Error {
-    case cannotConvertToURL
-    case cannotConvertToRequest
-}
-
 protocol URLRequestConvertible {
     var domain: String { get }
     var path: String { get }
     var method: APIMethod { get }
     var header: [String: String] { get }
-    var parameters: [String: Any] { get }
-    
-    func getURL() throws -> URL
-    func getRequest() throws -> URLRequest
+    var parameters: [String: Any] { get }    
 }
 
 enum Router {
@@ -68,47 +60,6 @@ extension Router: URLRequestConvertible {
         }
         
         return params
-    }
-    
-    func getURL() throws -> URL {
-        let uri = domain + path
-        guard let url = URL(string: uri) else {
-            throw RouterError.cannotConvertToURL
-        }
-        return url
-    }
-    
-    func getRequest() throws -> URLRequest {
-        do {
-            var url = try getURL() // url
-            encode(url: &url, with: parameters)  // param: encode + components
-            var request = URLRequest(url: url) // request
-            request.httpMethod = method.rawValue  // method
-            request.allHTTPHeaderFields = header  // header
-            
-            return request
-        } catch {
-            throw error
-        }
-    }
-}
-
-extension Router {
-    // parameters: encode & added
-    private func encode(url: inout URL, with parameters: [String: Any]) {
-        if var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false), !parameters.isEmpty {
-            
-            urlComponents.queryItems = [URLQueryItem]()
-            
-            for item in parameters {
-                let queryItem = URLQueryItem(
-                    name: item.key,
-                    value: "\(item.value)")
-                
-                urlComponents.queryItems?.append(queryItem)
-            }
-            url = urlComponents.url ?? url
-        }
     }
 }
 

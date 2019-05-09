@@ -8,15 +8,9 @@
 
 import Foundation
 
-enum NetworkError: Error, Equatable {
-    case requestFailed
-    case responseUnsuccessful(statusCode: Int)
-    case invalidData
-    case jsonParsingFailure
-}
 
 protocol WebRequestSpec {
-    func request<T: Codable>(request: URLRequest, compltion: @escaping (T?, Error?) -> Void)
+    func sendRequest<T: Codable>(model: URLRequestConvertible, compltion: @escaping (T?, Error?) -> Void)
 }
 
 class WebRequest: WebRequestSpec {
@@ -28,7 +22,17 @@ class WebRequest: WebRequestSpec {
         self.session = session
     }
     
-    func request<T: Codable>(request: URLRequest, compltion: @escaping (T?, Error?) -> Void) {
+    func sendRequest<T: Codable>(model: URLRequestConvertible, compltion: @escaping (T?, Error?) -> Void) {
+       
+        do {
+            let request = try getRequest(model: model)
+            sendRequest(request: request, compltion: compltion)
+        } catch {
+            compltion(nil, error)
+        }
+    }
+    
+    func sendRequest<T: Codable>(request: URLRequest, compltion: @escaping (T?, Error?) -> Void) {
         
         do {
             
@@ -62,6 +66,47 @@ class WebRequest: WebRequestSpec {
             }
             
             dataTask.resume()
+        }
+    }
+    
+    func getURL(model: URLRequestConvertible) throws -> URL {
+        let uri = model.domain + model.path
+        guard let url = URL(string: uri) else {
+            throw RouterError.cannotConvertToURL
+        }
+        return url
+    }
+    
+    func getRequest(model: URLRequestConvertible) throws -> URLRequest {
+        do {
+            var url = try getURL(model: model) // url
+            encode(url: &url, with: model.parameters)  // param: encode + components
+            var request = URLRequest(url: url) // request
+            request.httpMethod = model.method.rawValue  // method
+            request.allHTTPHeaderFields = model.header  // header
+            
+            return request
+        } catch {
+            throw RouterError.cannotConvertToRequest
+        }
+    }
+}
+
+extension WebRequest {
+    // parameters: encode & added
+    private func encode(url: inout URL, with parameters: [String: Any]) {
+        if var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false), !parameters.isEmpty {
+            
+            urlComponents.queryItems = [URLQueryItem]()
+            
+            for item in parameters {
+                let queryItem = URLQueryItem(
+                    name: item.key,
+                    value: "\(item.value)")
+                
+                urlComponents.queryItems?.append(queryItem)
+            }
+            url = urlComponents.url ?? url
         }
     }
 }
