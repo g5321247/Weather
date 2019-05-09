@@ -22,6 +22,7 @@ class WebRequestTests: XCTestCase {
         webRequest = nil
     }
     
+    // inside request
     func testRequestURL() {
         let url = URL(string: "www.google.com")!
         let request = URLRequest(url: url)
@@ -151,6 +152,67 @@ class WebRequestTests: XCTestCase {
             actualError = error as? NetworkError
         }
         XCTAssert(actualError! == NetworkError.requestFailed)
+    }
+    
+    // get URL
+    func testURLIfURLIsInvalid() {
+        let data = MockURLRequestConvertibleData()
+        
+        do {
+            _ = try webRequest.getURL(model: data)
+        } catch {
+            let actualError = error as? ConvertError
+            XCTAssert(actualError == ConvertError.cannotConvertToURL)
+        }
+    }
+    
+    func testURLIfURLIsValid() {
+        let data = MockURLRequestConvertibleData()
+        data.domain = "https://api.openweathermap.org"
+        data.path = "/data/2.5/weather"
+        
+        let expectResult = URL(string: "https://api.openweathermap.org/data/2.5/weather")
+        let result = try? webRequest.getURL(model: data)
+        
+        XCTAssert(expectResult == result)
+    }
+    
+    // get URLRequest
+    func testURLRequestIfURLIsInValid() {
+        let data = MockURLRequestConvertibleData()
+        
+        do {
+            _ = try webRequest.getRequest(model: data)
+        } catch {
+            let actualError = error as? ConvertError
+            XCTAssert(actualError == ConvertError.cannotConvertToURL)
+        }
+    }
+    
+    func testURLRequestIfURLIsValid() {
+        let data = MockURLRequestConvertibleData()
+        data.domain = "https://api.openweathermap.org"
+        data.path = "/data/2.5/weather"
+        data.parameters = ["q": "London"]
+        
+        let url = URL(string: "https://api.openweathermap.org/data/2.5/weather?q=London")!
+        let expectResult = URLRequest(url: url)
+        let result = try? webRequest.getRequest(model: data)
+        
+        XCTAssert(expectResult == result)
+    }
+    
+    // outside request
+    func testSendRequestIfURLIsInvalid() {
+        let data = MockURLRequestConvertibleData()
+        let expectError = ConvertError.cannotConvertToURL
+        var actualError: ConvertError?
+
+        webRequest.sendRequest(model: data) { (_: UV?, error) in
+            actualError = error as? ConvertError
+        }
+        
+        XCTAssert(expectError == actualError)
     }
     
 }

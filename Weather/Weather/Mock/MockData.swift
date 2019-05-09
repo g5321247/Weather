@@ -61,3 +61,4 @@ func getWeatherData() -> Data {
                     """.data(using: .utf8)!
     return data
 }
+

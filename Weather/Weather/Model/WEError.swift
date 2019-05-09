@@ -15,7 +15,6 @@ enum NetworkError: Error, Equatable {
     case jsonParsingFailure
 }
 
-enum RouterError: Error {
+enum ConvertError: Error, Equatable {
     case cannotConvertToURL
-    case cannotConvertToRequest
 }

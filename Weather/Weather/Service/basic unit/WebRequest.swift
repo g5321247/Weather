@@ -8,22 +8,20 @@
 
 import Foundation
 
-
 protocol WebRequestSpec {
     func sendRequest<T: Codable>(model: URLRequestConvertible, compltion: @escaping (T?, Error?) -> Void)
 }
 
-class WebRequest: WebRequestSpec {
+final class WebRequest: WebRequestSpec {
     
-    fileprivate let session: SessionProtocol
-    fileprivate let decoder: JSONDecoder = JSONDecoder()
+    private let session: SessionProtocol
+    private let decoder: JSONDecoder = JSONDecoder()
     
     init(session: SessionProtocol = URLSession.shared) {
         self.session = session
     }
     
     func sendRequest<T: Codable>(model: URLRequestConvertible, compltion: @escaping (T?, Error?) -> Void) {
-       
         do {
             let request = try getRequest(model: model)
             sendRequest(request: request, compltion: compltion)
@@ -72,7 +70,7 @@ class WebRequest: WebRequestSpec {
     func getURL(model: URLRequestConvertible) throws -> URL {
         let uri = model.domain + model.path
         guard let url = URL(string: uri) else {
-            throw RouterError.cannotConvertToURL
+            throw ConvertError.cannotConvertToURL
         }
         return url
     }
@@ -87,7 +85,7 @@ class WebRequest: WebRequestSpec {
             
             return request
         } catch {
-            throw RouterError.cannotConvertToRequest
+            throw error
         }
     }
 }
