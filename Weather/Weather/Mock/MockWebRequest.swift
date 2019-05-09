@@ -8,15 +8,14 @@
 
 import Foundation
 
-//class MockWebRequest: WebRequestSpec {
-//    
-//    var nextModel: Codable?
-//    var nextError: Error?
-//    var isCalled: Bool = false
-//    
-//    func request<T: Codable>(request: URLRequest, compltion: @escaping (T?, Error?) -> Void) {
-//        
-//        isCalled = true
-//        compltion(nextModel as? T, nextError)
-//    }
-//}
+class MockWebRequest: WebRequestSpec {
+    
+    var nextResult: Codable?
+    var nextError: Error?
+    var isCalled: Bool = false
+    
+    func sendRequest<T>(model: URLRequestConvertible, compltion: @escaping (T?, Error?) -> Void) {
+        isCalled = true
+        compltion(nextResult as? T, nextError)
+    }
+}

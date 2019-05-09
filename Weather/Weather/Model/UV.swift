@@ -8,6 +8,6 @@
 
 import Foundation
 
-struct UV: Codable {
+struct UV: Codable, Equatable {
     let value: Double
 }

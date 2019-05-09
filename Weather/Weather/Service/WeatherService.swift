@@ -11,7 +11,6 @@ import Foundation
 protocol WeatherServiceSpec {
     func downloadWeather(cityName: String, completion: @escaping (Weather?, Error?) -> Void)
     func downloadUVValue(latitude: String, longitude: String, completion: @escaping (UV?, Error?) -> Void)
-
 }
 
 class WeatherService: WeatherServiceSpec {
