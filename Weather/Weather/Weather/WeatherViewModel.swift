@@ -15,7 +15,7 @@ protocol WeatherViewModelInputs {
 
 protocol WeatherViewModelOutputs {
     var weather: ((Weather) -> Void)? { get set }
-    var pollution: ((UV) -> Void)? { get set }
+    var uvValue: ((UV) -> Void)? { get set }
     var error: ((Error) -> Void)? { get set }
 }
 
@@ -27,7 +27,7 @@ class WeatherViewModel: WeatherViewModelInputs, WeatherViewModelOutputs {
     // MARK: - ViewModelOutputParameter
     var weather: ((Weather) -> Void)?
     var error: ((Error) -> Void)?
-    var pollution: ((UV) -> Void)?
+    var uvValue: ((UV) -> Void)?
 
     // MARK: - Private Varible
     private let service: WeatherServiceSpec
@@ -47,7 +47,7 @@ class WeatherViewModel: WeatherViewModelInputs, WeatherViewModelOutputs {
         case .currentWeather:
             downloadCurrentWeather()
         case .uvValue:
-            downloadAirPollution()
+            downloadUV()
         }
     }
     
@@ -64,7 +64,7 @@ class WeatherViewModel: WeatherViewModelInputs, WeatherViewModelOutputs {
         }
     }
     
-    private func downloadAirPollution() {
+    private func downloadUV() {
         getCoordinateFrom(address: cityName) { [weak self] coordinate, error in
             guard let coordinate = coordinate, error == nil else {
                 self?.error?(error!)
@@ -81,7 +81,7 @@ class WeatherViewModel: WeatherViewModelInputs, WeatherViewModelOutputs {
                         self?.error?(error!)
                         return
                     }
-                    self?.pollution?(uv)
+                    self?.uvValue?(uv)
                 }
             })
         }

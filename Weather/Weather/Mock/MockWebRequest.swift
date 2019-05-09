@@ -12,7 +12,7 @@ class MockWebRequest: WebRequestSpec {
     
     var nextResult: Codable?
     var nextError: Error?
-    var isCalled: Bool = false
+    private(set) var isCalled: Bool = false
     
     func sendRequest<T>(model: URLRequestConvertible, compltion: @escaping (T?, Error?) -> Void) {
         isCalled = true

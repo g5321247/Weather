@@ -62,3 +62,23 @@ func getWeatherData() -> Data {
     return data
 }
 
+func getWeather() -> Weather {
+    return Weather(main: Main(temp: 285.81), name: "London", cod: 200)
+}
+
+func getUVData() -> Data {
+    let data = """
+                {
+                "lat": 51.5,
+                "lon": -0.13,
+                "date_iso": "2019-05-09T12:00:00Z",
+                "date": 1557403200,
+                "value": 4.24
+                }
+                """.data(using: .utf8)!
+    return data
+}
+
+func getUV() -> UV {
+    return UV(value: 4.24)
+}

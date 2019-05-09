@@ -51,11 +51,11 @@ class WebRequestTests: XCTestCase {
     }
     
     // Parse
-    func testVaildModelIfParseSuccess() {
+    func testWeatherModelIfParseSuccess() {
         let url = URL(string: "www.google.com")!
         let request = URLRequest(url: url)
         
-        let expeactModel = Weather(main: Main(temp: 285.81), name: "London", cod: 200)
+        let expeactModel = getWeather()
         session.nextResponse = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)
         session.nextData = getWeatherData()
         
@@ -68,7 +68,24 @@ class WebRequestTests: XCTestCase {
         XCTAssert(acutalModel == expeactModel)
     }
     
-    func testInvaildModelIfParseFailed() {
+    func testUVModelIfParseSuccess() {
+        let url = URL(string: "www.google.com")!
+        let request = URLRequest(url: url)
+        
+        let expeactModel = getUV()
+        session.nextResponse = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)
+        session.nextData = getUVData()
+        
+        var acutalModel: UV?
+        
+        webRequest.sendRequest(request: request) { model, _ in
+            acutalModel = model
+        }
+        
+        XCTAssert(acutalModel == expeactModel)
+    }
+    
+    func testInvaildWeatherIfParseFailed() {
         let url = URL(string: "www.google.com")!
         let request = URLRequest(url: url)
         

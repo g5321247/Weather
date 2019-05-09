@@ -46,7 +46,7 @@ class WeatherViewController: UIViewController {
             self?.llTemperature.text = "溫度：" + String(weather.main.temp)
         }
         
-        outputs.pollution = { [weak self] (uv) in
+        outputs.uvValue = { [weak self] (uv) in
             self?.llCityName.text = "UV 指數：" + String(uv.value)
             self?.llTemperature.text = ""
         }
