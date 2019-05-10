@@ -28,7 +28,9 @@ class WeatherViewController: UIViewController {
     }
 
     func inject(cityName: String, type: WeatherType) {
+        let service = MockWeatherService()
         let service = WeatherService()
+        
         viewModel = WeatherViewModel(service: service, cityName: cityName, type: type)
     }
     

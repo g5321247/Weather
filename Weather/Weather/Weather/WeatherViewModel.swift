@@ -66,6 +66,7 @@ class WeatherViewModel: WeatherViewModelInputs, WeatherViewModelOutputs {
     
     private func downloadUV() {
         getCoordinateFrom(address: cityName) { [weak self] coordinate, error in
+            
             guard let coordinate = coordinate, error == nil else {
                 self?.error?(error!)
                 return
@@ -87,7 +88,7 @@ class WeatherViewModel: WeatherViewModelInputs, WeatherViewModelOutputs {
         }
     }
     
-    private func getCoordinateFrom(address: String, completion: @escaping(_ coordinate: CLLocationCoordinate2D?, _ error: Error?) -> () ) {
+    func getCoordinateFrom(address: String, completion: @escaping(_ coordinate: CLLocationCoordinate2D?, _ error: Error?) -> () ) {
         CLGeocoder().geocodeAddressString(address) { completion($0?.first?.location?.coordinate, $1) }
     }
 }
