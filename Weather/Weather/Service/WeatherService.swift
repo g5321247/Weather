@@ -15,19 +15,19 @@ protocol WeatherServiceSpec {
 
 class WeatherService: WeatherServiceSpec {
 
-    private let requestor: WebRequestSpec
+    private let networkHandler: NetworkHandlerSpec
 
-    init(requestor: WebRequestSpec = WebRequest()) {
-        self.requestor = requestor
+    init(networkHandler: NetworkHandlerSpec = NetworkHandler()) {
+        self.networkHandler = networkHandler
     }
 
     func downloadWeather(cityName: String, completion: @escaping (Weather?, Error?) -> Void) {
         let router: Router = .currentWeather(cityName)
-        requestor.download(model: router, completion: completion)
+        networkHandler.download(model: router, completion: completion)
     }
 
     func downloadUVValue(latitude: String, longitude: String, completion: @escaping (UV?, Error?) -> Void) {
         let router: Router = .uvValue(latitude, longitude)
-        requestor.download(model: router, completion: completion)
+        networkHandler.download(model: router, completion: completion)
     }
 }

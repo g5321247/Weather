@@ -8,14 +8,16 @@
 
 import Foundation
 
-protocol WebRequestSpec {
+protocol NetworkHandlerSpec {
     func download<T: Codable>(model: URLRequestConvertible, completion: @escaping (T?, Error?) -> Void)
+    func cancelDownload()
 }
 
-final class WebRequest: WebRequestSpec {
+final class NetworkHandler: NetworkHandlerSpec {
     
     private let session: SessionProtocol
     private let decoder: JSONDecoder = JSONDecoder()
+    private var dataTask: URLSessionDataTaskProtocol?
     
     init(session: SessionProtocol = URLSession.shared) {
         self.session = session
@@ -36,35 +38,39 @@ final class WebRequest: WebRequestSpec {
         }
     }
     
+    func cancelDownload() {
+        dataTask?.cancel()
+    }
+    
     func sendRequest(request: URLRequest, completion: @escaping (Data?, Error?) -> Void) {
         
-        do {
-            let dataTask = session.dataTask(with: request) { (data, response, error) in
-                guard error == nil else {
-                    completion(nil, error!)
-                    return
-                }
-                
-                guard let response = response as? HTTPURLResponse else {
-                    completion(nil, NetworkError.requestFailed)
-                    return
-                }
-                
-                guard 200 ... 299 ~= response.statusCode else {
-                    completion(nil, NetworkError.responseUnsuccessful(statusCode: response.statusCode))
-                    return
-                }
-                
-                guard let data = data else {
-                    completion(nil, NetworkError.invalidData)
-                    return
-                }
-                
-                completion(data, nil)
+        dataTask = session.dataTask(with: request) { (data, response, error) in
+            defer { self.dataTask = nil }
+            
+            guard error == nil else {
+                completion(nil, error!)
+                return
             }
             
-            dataTask.resume()
+            guard let response = response as? HTTPURLResponse else {
+                completion(nil, NetworkError.requestFailed)
+                return
+            }
+            
+            guard 200 ... 299 ~= response.statusCode else {
+                completion(nil, NetworkError.responseUnsuccessful(statusCode: response.statusCode))
+                return
+            }
+            
+            guard let data = data else {
+                completion(nil, NetworkError.invalidData)
+                return
+            }
+            
+            completion(data, nil)
         }
+        
+        dataTask?.resume()
     }
     
     func parseResult<T: Codable>(data: Data, completion: @escaping (T?, Error?) -> Void) {
@@ -87,7 +93,7 @@ final class WebRequest: WebRequestSpec {
     func getRequest(model: URLRequestConvertible) throws -> URLRequest {
         do {
             var url = try getURL(model: model) // url
-            encode(url: &url, with: model.parameters)  // param: encode + components
+            configureParameters(url: &url, with: model.parameters)  // param: encode + components
             var request = URLRequest(url: url) // request
             request.httpMethod = model.method.rawValue  // method
             request.allHTTPHeaderFields = model.header  // header
@@ -99,9 +105,9 @@ final class WebRequest: WebRequestSpec {
     }
 }
 
-extension WebRequest {
+extension NetworkHandler {
     // parameters: encode & added
-    private func encode(url: inout URL, with parameters: [String: Any]) {
+    private func configureParameters(url: inout URL, with parameters: [String: Any]) {
         if var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false), !parameters.isEmpty {
             
             urlComponents.queryItems = [URLQueryItem]()

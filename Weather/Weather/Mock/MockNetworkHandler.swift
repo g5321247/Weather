@@ -8,8 +8,8 @@
 
 import Foundation
 
-class MockWebRequest: WebRequestSpec {
-
+class MockNetworkHandler: NetworkHandlerSpec {
+   
     var nextResult: Codable?
     var nextError: Error?
     private(set) var isCalled: Bool = false
@@ -17,5 +17,9 @@ class MockWebRequest: WebRequestSpec {
     func download<T>(model: URLRequestConvertible, completion: @escaping (T?, Error?) -> Void) {
         isCalled = true
         completion(nextResult as? T, nextError)
+    }
+    
+    func cancelDownload() {
+        isCalled = true
     }
 }

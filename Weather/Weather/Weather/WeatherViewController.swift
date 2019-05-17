@@ -28,8 +28,7 @@ class WeatherViewController: UIViewController {
     }
 
     func inject(cityName: String, type: WeatherType) {
-        let service = MockWeatherService()
-//        let service = WeatherService()
+        let service = WeatherService()
         
         viewModel = WeatherViewModel(service: service, cityName: cityName, type: type)
     }
@@ -38,9 +37,8 @@ class WeatherViewController: UIViewController {
         var outputs = viewModel.outputs
         
         outputs.error = { [weak self] (error) in
-            #warning("Error handling")
-            self?.llCityName.text = "有 Error"
-            self?.llTemperature.text = "但我還沒做 handle"
+            self?.llCityName.text = "錯誤"
+            self?.llTemperature.text = error.localizedDescription
         }
         
         outputs.weather = { [weak self] (weather) in

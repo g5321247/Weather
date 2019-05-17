@@ -9,17 +9,17 @@
 import XCTest
 @testable import Weather
 
-class WebRequestTests: XCTestCase {
+class NetworkHandlerTests: XCTestCase {
     
-    var webRequest: WebRequest!
+    var networkHandler: NetworkHandler!
     let session = MockURLSession()
     
     override func setUp() {
-        webRequest = WebRequest(session: session)
+        networkHandler = NetworkHandler(session: session)
     }
     
     override func tearDown() {
-        webRequest = nil
+        networkHandler = nil
     }
     
     // Request
@@ -27,7 +27,7 @@ class WebRequestTests: XCTestCase {
         let url = URL(string: "www.google.com")!
         let request = URLRequest(url: url)
         
-        webRequest.sendRequest(request: request) { (_: Data?, _) in}
+        networkHandler.sendRequest(request: request) { (_: Data?, _) in}
         
         XCTAssert(session.request!.url == url)
     }
@@ -36,7 +36,7 @@ class WebRequestTests: XCTestCase {
         let url = URL(string: "www.google.com")!
         let request = URLRequest(url: url)
         
-        webRequest.sendRequest(request: request) { (_: Data?, _) in}
+        networkHandler.sendRequest(request: request) { (_: Data?, _) in}
 
         XCTAssert(session.request!.httpMethod == APIMethod.get.rawValue)
     }
@@ -45,7 +45,7 @@ class WebRequestTests: XCTestCase {
         let url = URL(string: "www.google.com")!
         let request = URLRequest(url: url)
         
-        webRequest.sendRequest(request: request) { (_: Data?, _) in}
+        networkHandler.sendRequest(request: request) { (_: Data?, _) in}
         
         XCTAssertTrue(session.nextDataTask.isCalled)
     }
@@ -57,7 +57,7 @@ class WebRequestTests: XCTestCase {
         
         var acutalModel: Weather?
         
-        webRequest.parseResult(data: data) { model, _ in
+        networkHandler.parseResult(data: data) { model, _ in
             acutalModel = model
         }
         
@@ -70,7 +70,7 @@ class WebRequestTests: XCTestCase {
         
         var acutalModel: UV?
         
-        webRequest.parseResult(data: data) { model, _ in
+        networkHandler.parseResult(data: data) { model, _ in
             acutalModel = model
         }
         
@@ -82,7 +82,7 @@ class WebRequestTests: XCTestCase {
         
         var actualError: NetworkError?
         
-        webRequest.parseResult(data: data) { (model: Weather?, error) in
+        networkHandler.parseResult(data: data) { (model: Weather?, error) in
             actualError = error as? NetworkError
         }
         
@@ -98,7 +98,7 @@ class WebRequestTests: XCTestCase {
         
         var actualError: NetworkError?
         
-        webRequest.sendRequest(request: request) { (_: Data?, error) in
+        networkHandler.sendRequest(request: request) { (_: Data?, error) in
             actualError = error as? NetworkError
         }
         
@@ -113,7 +113,7 @@ class WebRequestTests: XCTestCase {
         let expectedError = NSError(domain: "error", code: 0, userInfo: nil)
         session.nextError = expectedError
         
-        webRequest.sendRequest(request: request) { (_: Data?, error) in
+        networkHandler.sendRequest(request: request) { (_: Data?, error) in
             XCTAssert(error! as NSError == expectedError)
         }
     }
@@ -127,7 +127,7 @@ class WebRequestTests: XCTestCase {
         
         var actualError: NetworkError?
         
-        webRequest.sendRequest(request: request) { (_: Data?, error) in
+        networkHandler.sendRequest(request: request) { (_: Data?, error) in
             actualError = error as? NetworkError
         }
         XCTAssert(actualError! == NetworkError.responseUnsuccessful(statusCode: 199))
@@ -140,7 +140,7 @@ class WebRequestTests: XCTestCase {
         session.nextResponse = HTTPURLResponse(statusCode: 300)
         var actualError: NetworkError?
         
-        webRequest.sendRequest(request: request) { (_: Data?, error) in
+        networkHandler.sendRequest(request: request) { (_: Data?, error) in
             actualError = error as? NetworkError
         }
         XCTAssert(actualError! == NetworkError.responseUnsuccessful(statusCode: 300))
@@ -153,7 +153,7 @@ class WebRequestTests: XCTestCase {
         session.nextResponse = nil
         var actualError: NetworkError?
         
-        webRequest.sendRequest(request: request) { (_: Data?, error) in
+        networkHandler.sendRequest(request: request) { (_: Data?, error) in
             actualError = error as? NetworkError
         }
         XCTAssert(actualError! == NetworkError.requestFailed)
@@ -164,7 +164,7 @@ class WebRequestTests: XCTestCase {
         let urlObject = MockURLRequestConvertible()
         
         do {
-            _ = try webRequest.getURL(model: urlObject)
+            _ = try networkHandler.getURL(model: urlObject)
         } catch {
             let actualError = error as? ConvertError
             XCTAssert(actualError == ConvertError.cannotConvertToURL)
@@ -177,7 +177,7 @@ class WebRequestTests: XCTestCase {
         urlObject.path = "/data/2.5/weather"
         
         let expectResult = URL(string: "https://api.openweathermap.org/data/2.5/weather")
-        let result = try? webRequest.getURL(model: urlObject)
+        let result = try? networkHandler.getURL(model: urlObject)
         
         XCTAssert(expectResult == result)
     }
@@ -187,7 +187,7 @@ class WebRequestTests: XCTestCase {
         let urlObject = MockURLRequestConvertible()
         
         do {
-            _ = try webRequest.getRequest(model: urlObject)
+            _ = try networkHandler.getRequest(model: urlObject)
         } catch {
             let actualError = error as? ConvertError
             XCTAssert(actualError == ConvertError.cannotConvertToURL)
@@ -202,7 +202,7 @@ class WebRequestTests: XCTestCase {
         
         let url = URL(string: "https://api.openweathermap.org/data/2.5/weather?q=London")!
         let expectResult = URLRequest(url: url)
-        let result = try? webRequest.getRequest(model: urlObject)
+        let result = try? networkHandler.getRequest(model: urlObject)
         
         XCTAssert(expectResult == result)
     }
@@ -213,7 +213,7 @@ class WebRequestTests: XCTestCase {
         let expectError = ConvertError.cannotConvertToURL
         var actualError: ConvertError?
 
-        webRequest.download(model: urlObject) { (_: UV?, error) in
+        networkHandler.download(model: urlObject) { (_: UV?, error) in
             actualError = error as? ConvertError
         }
         
@@ -234,7 +234,7 @@ class WebRequestTests: XCTestCase {
         
         var acutalModel: Weather?
 
-        webRequest.download(model: urlObject) { (weather, _) in
+        networkHandler.download(model: urlObject) { (weather, _) in
             acutalModel = weather
         }
 
@@ -251,7 +251,7 @@ class WebRequestTests: XCTestCase {
         var actualError: NetworkError?
         session.nextResponse = nil
         
-        webRequest.download(model: urlObject) { (_: UV?, error) in
+        networkHandler.download(model: urlObject) { (_: UV?, error) in
             actualError = error as? NetworkError
         }
         

@@ -12,10 +12,10 @@ import XCTest
 class WeatherServiceTests: XCTestCase {
 
     var service: WeatherService!
-    let requestor = MockWebRequest()
+    let networkHandler = MockNetworkHandler()
 
     override func setUp() {
-        service = WeatherService(requestor: requestor)
+        service = WeatherService(networkHandler: networkHandler)
     }
 
     override func tearDown() {
@@ -24,12 +24,12 @@ class WeatherServiceTests: XCTestCase {
     
     func testRequestIsCalledIfDownloadWeather() {
         service.downloadWeather(cityName: "London") { (_, _) in}
-        XCTAssertTrue(requestor.isCalled)
+        XCTAssertTrue(networkHandler.isCalled)
     }
     
     func testErrorIfHandleFailure() {
         let expeactError = NetworkError.invalidData
-        requestor.nextError = expeactError
+        networkHandler.nextError = expeactError
         
         var acutalError: NetworkError?
 
@@ -44,7 +44,7 @@ class WeatherServiceTests: XCTestCase {
     func testWeatherIfHandleSuccess() {
         let expeactModel = Weather(main: Main(temp: 285.81), name: "London", cod: 200)
 
-        requestor.nextResult = expeactModel
+        networkHandler.nextResult = expeactModel
         var acutalModel: Weather?
 
         service.downloadWeather(cityName: "London") { (weather, _) in
@@ -58,7 +58,7 @@ class WeatherServiceTests: XCTestCase {
     func testUVIfHandleSuccess() {
         let expeactModel = UV(value: 12)
         
-        requestor.nextResult = expeactModel
+        networkHandler.nextResult = expeactModel
         var acutalModel: UV?
 
         service.downloadUVValue(latitude: "10", longitude: "10") { (uv, _) in

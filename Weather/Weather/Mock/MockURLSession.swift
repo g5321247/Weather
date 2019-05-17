@@ -33,6 +33,10 @@ class MockURLSessionDataTask: URLSessionDataTaskProtocol {
     func resume() {
         isCalled = true
     }
+    
+    func cancel() {
+        isCalled = true
+    }
 }
 
 extension HTTPURLResponse {

@@ -40,6 +40,8 @@ class WeatherViewModelTests: XCTestCase {
             let longitude = String(format: "%.2f", coordinate!.longitude)
             
             XCTAssert(expectLatitude == latitude)
+            XCTAssert(expectLongitude == longitude)
+            
             expect.fulfill()
         }
         
