@@ -47,19 +47,14 @@ class WeatherServiceTests: XCTestCase {
         requestor.nextResult = expeactModel
         var acutalModel: Weather?
 
-<<<<<<< Updated upstream
         service.downloadWeather(cityName: "London") { (weather, _) in
             acutalModel = weather
         }
         
         XCTAssert(acutalModel == expeactModel)
     }
-=======
-    func test
->>>>>>> Stashed changes
-    
-    // UV
-    
+
+    // UV    
     func testUVIfHandleSuccess() {
         let expeactModel = UV(value: 12)
         

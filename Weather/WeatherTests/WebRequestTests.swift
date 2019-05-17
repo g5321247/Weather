@@ -22,7 +22,7 @@ class WebRequestTests: XCTestCase {
         webRequest = nil
     }
     
-    // inside request
+    // Request
     func testRequestURL() {
         let url = URL(string: "www.google.com")!
         let request = URLRequest(url: url)
@@ -52,16 +52,12 @@ class WebRequestTests: XCTestCase {
     
     // Parse
     func testWeatherModelIfParseSuccess() {
-        let url = URL(string: "www.google.com")!
-        let request = URLRequest(url: url)
-        
+        let data = getWeatherData()
         let expeactModel = getWeather()
-        session.nextResponse = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)
-        session.nextData = getWeatherData()
         
         var acutalModel: Weather?
         
-        webRequest.sendRequest(request: request) { model, _ in
+        webRequest.parseResult(data: data) { model, _ in
             acutalModel = model
         }
         
@@ -69,16 +65,12 @@ class WebRequestTests: XCTestCase {
     }
     
     func testUVModelIfParseSuccess() {
-        let url = URL(string: "www.google.com")!
-        let request = URLRequest(url: url)
-        
+        let data = getUVData()
         let expeactModel = getUV()
-        session.nextResponse = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)
-        session.nextData = getUVData()
         
         var acutalModel: UV?
         
-        webRequest.sendRequest(request: request) { model, _ in
+        webRequest.parseResult(data: data) { model, _ in
             acutalModel = model
         }
         
@@ -86,15 +78,11 @@ class WebRequestTests: XCTestCase {
     }
     
     func testInvaildWeatherIfParseFailed() {
-        let url = URL(string: "www.google.com")!
-        let request = URLRequest(url: url)
-        
-        session.nextResponse = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)
-        session.nextData = getWeatherData()
+        let data = getUVData()
         
         var actualError: NetworkError?
         
-        webRequest.sendRequest(request: request) { (model: UV?, error) in
+        webRequest.parseResult(data: data) { (model: Weather?, error) in
             actualError = error as? NetworkError
         }
         
@@ -173,7 +161,7 @@ class WebRequestTests: XCTestCase {
     
     // get URL
     func testURLIfURLIsInvalid() {
-        let data = MockURLRequestConvertibleData()
+        let data = MockURLRequestConvertible()
         
         do {
             _ = try webRequest.getURL(model: data)
@@ -184,7 +172,7 @@ class WebRequestTests: XCTestCase {
     }
     
     func testURLIfURLIsValid() {
-        let data = MockURLRequestConvertibleData()
+        let data = MockURLRequestConvertible()
         data.domain = "https://api.openweathermap.org"
         data.path = "/data/2.5/weather"
         
@@ -196,7 +184,7 @@ class WebRequestTests: XCTestCase {
     
     // get URLRequest
     func testURLRequestIfURLIsInValid() {
-        let data = MockURLRequestConvertibleData()
+        let data = MockURLRequestConvertible()
         
         do {
             _ = try webRequest.getRequest(model: data)
@@ -207,7 +195,7 @@ class WebRequestTests: XCTestCase {
     }
     
     func testURLRequestIfURLIsValid() {
-        let data = MockURLRequestConvertibleData()
+        let data = MockURLRequestConvertible()
         data.domain = "https://api.openweathermap.org"
         data.path = "/data/2.5/weather"
         data.parameters = ["q": "London"]
@@ -219,13 +207,13 @@ class WebRequestTests: XCTestCase {
         XCTAssert(expectResult == result)
     }
     
-    // outside request
-    func testSendRequestIfURLIsInvalid() {
-        let data = MockURLRequestConvertibleData()
+    // Download Process
+    func testDownloadIfURLIsInvalid() {
+        let data = MockURLRequestConvertible()
         let expectError = ConvertError.cannotConvertToURL
         var actualError: ConvertError?
 
-        webRequest.handleRequest(model: data) { (_: UV?, error) in
+        webRequest.download(model: data) { (_: UV?, error) in
             actualError = error as? ConvertError
         }
         

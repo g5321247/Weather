@@ -8,7 +8,7 @@
 
 import Foundation
 
-class MockURLRequestConvertibleData: URLRequestConvertible {
+class MockURLRequestConvertible: URLRequestConvertible {
     var domain: String = ""
     
     var path: String = ""

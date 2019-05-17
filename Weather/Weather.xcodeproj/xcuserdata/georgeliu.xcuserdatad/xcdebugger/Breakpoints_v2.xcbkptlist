@@ -33,38 +33,6 @@
             endingLineNumber = "88"
             landmarkName = "getRequest(model:)"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Weather.WebRequest.getRequest(model: Weather.URLRequestConvertible) throws -&gt; Foundation.URLRequest"
-                  moduleName = "Weather"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/georgeliu/Desktop/Weather/Weather/Weather/Service/basic%20unit/WebRequest.swift"
-                  timestampString = "579570625.339099"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "88"
-                  endingLineNumber = "88"
-                  offsetFromSymbolStart = "1257">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "Weather.WebRequest.getRequest(model: Weather.URLRequestConvertible) throws -&gt; Foundation.URLRequest"
-                  moduleName = "Weather"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/georgeliu/Desktop/Weather/Weather/Weather/Service/basic%20unit/WebRequest.swift"
-                  timestampString = "579570625.341719"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "88"
-                  endingLineNumber = "88"
-                  offsetFromSymbolStart = "1325">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
