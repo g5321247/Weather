@@ -188,7 +188,7 @@
 		C81205762281557000612003 /* Service */ = {
 			isa = PBXGroup;
 			children = (
-				C8F701682283B703002AAB9D /* basic unit */,
+				C8F701682283B703002AAB9D /* Basic */,
 				C897D8202282A6F700ACB66B /* Router.swift */,
 				C81205742281556B00612003 /* WeatherService.swift */,
 			);
@@ -207,13 +207,13 @@
 			path = Mock;
 			sourceTree = "<group>";
 		};
-		C8F701682283B703002AAB9D /* basic unit */ = {
+		C8F701682283B703002AAB9D /* Basic */ = {
 			isa = PBXGroup;
 			children = (
 				C897D830228306BC00ACB66B /* Session.swift */,
 				C81205772281561300612003 /* WebRequest.swift */,
 			);
-			path = "basic unit";
+			path = Basic;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

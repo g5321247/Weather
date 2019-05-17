@@ -14,7 +14,7 @@ class MockWebRequest: WebRequestSpec {
     var nextError: Error?
     private(set) var isCalled: Bool = false
     
-    func sendRequest<T>(model: URLRequestConvertible, compltion: @escaping (T?, Error?) -> Void) {
+    func handleRequest<T>(model: URLRequestConvertible, compltion: @escaping (T?, Error?) -> Void) {
         isCalled = true
         compltion(nextResult as? T, nextError)
     }

@@ -32,6 +32,6 @@ class WeatherService: WeatherServiceSpec {
     }
     
     private func requestHandler<T: Codable>(router: Router, completion: @escaping (T?, Error?) -> Void) {
-        requestor.sendRequest(model: router, compltion: completion)
+        requestor.handleRequest(model: router, compltion: completion)
     }
 }

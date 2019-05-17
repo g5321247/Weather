@@ -225,7 +225,7 @@ class WebRequestTests: XCTestCase {
         let expectError = ConvertError.cannotConvertToURL
         var actualError: ConvertError?
 
-        webRequest.sendRequest(model: data) { (_: UV?, error) in
+        webRequest.handleRequest(model: data) { (_: UV?, error) in
             actualError = error as? ConvertError
         }
         

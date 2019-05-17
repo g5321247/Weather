@@ -9,7 +9,7 @@
 import Foundation
 
 protocol WebRequestSpec {
-    func sendRequest<T: Codable>(model: URLRequestConvertible, compltion: @escaping (T?, Error?) -> Void)
+    func handleRequest<T: Codable>(model: URLRequestConvertible, compltion: @escaping (T?, Error?) -> Void)
 }
 
 final class WebRequest: WebRequestSpec {
@@ -21,19 +21,24 @@ final class WebRequest: WebRequestSpec {
         self.session = session
     }
     
-    func sendRequest<T: Codable>(model: URLRequestConvertible, compltion: @escaping (T?, Error?) -> Void) {
+    func handleRequest<T: Codable>(model: URLRequestConvertible, compltion: @escaping (T?, Error?) -> Void) {
         do {
             let request = try getRequest(model: model)
-            sendRequest(request: request, compltion: compltion)
+            sendRequest(request: request) { [weak self] (data, error) in
+                guard let data = data else {
+                    compltion(nil, error)
+                    return
+                }
+                self?.parseResult(data: data, compltion: compltion)
+            }
         } catch {
             compltion(nil, error)
         }
     }
     
-    func sendRequest<T: Codable>(request: URLRequest, compltion: @escaping (T?, Error?) -> Void) {
+    func sendRequest(request: URLRequest, compltion: @escaping (Data?, Error?) -> Void) {
         
         do {
-            
             let dataTask = session.dataTask(with: request) { (data, response, error) in
                 guard error == nil else {
                     compltion(nil, error!)
@@ -55,15 +60,19 @@ final class WebRequest: WebRequestSpec {
                     return
                 }
                 
-                do {
-                    let result = try self.decoder.decode(T.self, from: data)
-                    compltion(result, nil)
-                } catch {
-                    compltion(nil, NetworkError.jsonParsingFailure)
-                }
+                compltion(data, nil)
             }
             
             dataTask.resume()
+        }
+    }
+    
+    func parseResult<T: Codable>(data: Data, compltion: @escaping (T?, Error?) -> Void) {
+        do {
+            let result = try decoder.decode(T.self, from: data)
+            compltion(result, nil)
+        } catch {
+            compltion(nil, NetworkError.jsonParsingFailure)
         }
     }
     
