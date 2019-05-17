@@ -161,10 +161,10 @@ class WebRequestTests: XCTestCase {
     
     // get URL
     func testURLIfURLIsInvalid() {
-        let data = MockURLRequestConvertible()
+        let urlObject = MockURLRequestConvertible()
         
         do {
-            _ = try webRequest.getURL(model: data)
+            _ = try webRequest.getURL(model: urlObject)
         } catch {
             let actualError = error as? ConvertError
             XCTAssert(actualError == ConvertError.cannotConvertToURL)
@@ -172,22 +172,22 @@ class WebRequestTests: XCTestCase {
     }
     
     func testURLIfURLIsValid() {
-        let data = MockURLRequestConvertible()
-        data.domain = "https://api.openweathermap.org"
-        data.path = "/data/2.5/weather"
+        let urlObject = MockURLRequestConvertible()
+        urlObject.domain = "https://api.openweathermap.org"
+        urlObject.path = "/data/2.5/weather"
         
         let expectResult = URL(string: "https://api.openweathermap.org/data/2.5/weather")
-        let result = try? webRequest.getURL(model: data)
+        let result = try? webRequest.getURL(model: urlObject)
         
         XCTAssert(expectResult == result)
     }
     
     // get URLRequest
     func testURLRequestIfURLIsInValid() {
-        let data = MockURLRequestConvertible()
+        let urlObject = MockURLRequestConvertible()
         
         do {
-            _ = try webRequest.getRequest(model: data)
+            _ = try webRequest.getRequest(model: urlObject)
         } catch {
             let actualError = error as? ConvertError
             XCTAssert(actualError == ConvertError.cannotConvertToURL)
@@ -195,26 +195,64 @@ class WebRequestTests: XCTestCase {
     }
     
     func testURLRequestIfURLIsValid() {
-        let data = MockURLRequestConvertible()
-        data.domain = "https://api.openweathermap.org"
-        data.path = "/data/2.5/weather"
-        data.parameters = ["q": "London"]
+        let urlObject = MockURLRequestConvertible()
+        urlObject.domain = "https://api.openweathermap.org"
+        urlObject.path = "/data/2.5/weather"
+        urlObject.parameters = ["q": "London"]
         
         let url = URL(string: "https://api.openweathermap.org/data/2.5/weather?q=London")!
         let expectResult = URLRequest(url: url)
-        let result = try? webRequest.getRequest(model: data)
+        let result = try? webRequest.getRequest(model: urlObject)
         
         XCTAssert(expectResult == result)
     }
     
     // Download Process
-    func testDownloadIfURLIsInvalid() {
-        let data = MockURLRequestConvertible()
+    func testDownloadFailIfURLIsInvalid() {
+        let urlObject = MockURLRequestConvertible()
         let expectError = ConvertError.cannotConvertToURL
         var actualError: ConvertError?
 
-        webRequest.download(model: data) { (_: UV?, error) in
+        webRequest.download(model: urlObject) { (_: UV?, error) in
             actualError = error as? ConvertError
+        }
+        
+        XCTAssert(expectError == actualError)
+    }
+    
+    func testDownloadSuccessIfURLIsValid() {
+        let urlObject = MockURLRequestConvertible()
+        urlObject.domain = "https://api.openweathermap.org"
+        urlObject.path = "/data/2.5/weather"
+        urlObject.parameters = ["q": "London"]
+        
+        let url = URL(string: "www.google.com")!
+        
+        let expeactModel = getWeather()
+        session.nextResponse = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)
+        session.nextData = getWeatherData()
+        
+        var acutalModel: Weather?
+
+        webRequest.download(model: urlObject) { (weather, _) in
+            acutalModel = weather
+        }
+
+        XCTAssert(expeactModel == acutalModel)
+    }
+    
+    func testDownloadFailIfRequestFail() {
+        let urlObject = MockURLRequestConvertible()
+        urlObject.domain = "https://api.openweathermap.org"
+        urlObject.path = "/data/2.5/weather"
+        urlObject.parameters = ["q": "London"]
+        
+        let expectError = NetworkError.requestFailed
+        var actualError: NetworkError?
+        session.nextResponse = nil
+        
+        webRequest.download(model: urlObject) { (_: UV?, error) in
+            actualError = error as? NetworkError
         }
         
         XCTAssert(expectError == actualError)
