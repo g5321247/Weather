@@ -9,7 +9,7 @@
 import Foundation
 
 protocol WebRequestSpec {
-    func handleRequest<T: Codable>(model: URLRequestConvertible, compltion: @escaping (T?, Error?) -> Void)
+    func download<T: Codable>(model: URLRequestConvertible, completion: @escaping (T?, Error?) -> Void)
 }
 
 final class WebRequest: WebRequestSpec {
@@ -21,58 +21,58 @@ final class WebRequest: WebRequestSpec {
         self.session = session
     }
     
-    func handleRequest<T: Codable>(model: URLRequestConvertible, compltion: @escaping (T?, Error?) -> Void) {
+    func download<T: Codable>(model: URLRequestConvertible, completion: @escaping (T?, Error?) -> Void) {
         do {
             let request = try getRequest(model: model)
             sendRequest(request: request) { [weak self] (data, error) in
                 guard let data = data else {
-                    compltion(nil, error)
+                    completion(nil, error)
                     return
                 }
-                self?.parseResult(data: data, compltion: compltion)
+                self?.parseResult(data: data, completion: completion)
             }
         } catch {
-            compltion(nil, error)
+            completion(nil, error)
         }
     }
     
-    func sendRequest(request: URLRequest, compltion: @escaping (Data?, Error?) -> Void) {
+    func sendRequest(request: URLRequest, completion: @escaping (Data?, Error?) -> Void) {
         
         do {
             let dataTask = session.dataTask(with: request) { (data, response, error) in
                 guard error == nil else {
-                    compltion(nil, error!)
+                    completion(nil, error!)
                     return
                 }
                 
                 guard let response = response as? HTTPURLResponse else {
-                    compltion(nil, NetworkError.requestFailed)
+                    completion(nil, NetworkError.requestFailed)
                     return
                 }
                 
                 guard 200 ... 299 ~= response.statusCode else {
-                    compltion(nil, NetworkError.responseUnsuccessful(statusCode: response.statusCode))
+                    completion(nil, NetworkError.responseUnsuccessful(statusCode: response.statusCode))
                     return
                 }
                 
                 guard let data = data else {
-                    compltion(nil, NetworkError.invalidData)
+                    completion(nil, NetworkError.invalidData)
                     return
                 }
                 
-                compltion(data, nil)
+                completion(data, nil)
             }
             
             dataTask.resume()
         }
     }
     
-    func parseResult<T: Codable>(data: Data, compltion: @escaping (T?, Error?) -> Void) {
+    func parseResult<T: Codable>(data: Data, completion: @escaping (T?, Error?) -> Void) {
         do {
             let result = try decoder.decode(T.self, from: data)
-            compltion(result, nil)
+            completion(result, nil)
         } catch {
-            compltion(nil, NetworkError.jsonParsingFailure)
+            completion(nil, NetworkError.jsonParsingFailure)
         }
     }
     

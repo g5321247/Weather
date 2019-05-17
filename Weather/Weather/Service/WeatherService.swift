@@ -23,15 +23,11 @@ class WeatherService: WeatherServiceSpec {
 
     func downloadWeather(cityName: String, completion: @escaping (Weather?, Error?) -> Void) {
         let router: Router = .currentWeather(cityName)
-        requestor.sendRequest(model: router, compltion: completion)
+        requestor.download(model: router, completion: completion)
     }
 
     func downloadUVValue(latitude: String, longitude: String, completion: @escaping (UV?, Error?) -> Void) {
         let router: Router = .uvValue(latitude, longitude)
-        requestHandler(router: router, completion: completion)
-    }
-
-    private func requestHandler<T: Codable>(router: Router, completion: @escaping (T?, Error?) -> Void) {
-        requestor.handleRequest(model: router, compltion: completion)
+        requestor.download(model: router, completion: completion)
     }
 }
