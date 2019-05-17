@@ -109,8 +109,8 @@ extension WebRequest {
             for item in parameters {
                 let queryItem = URLQueryItem(
                     name: item.key,
-                    value: "\(item.value)")
-                
+                    value: "\(item.value)"//.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed))
+                )
                 urlComponents.queryItems?.append(queryItem)
             }
             url = urlComponents.url ?? url
