@@ -7,6 +7,7 @@
 //
 
 import XCTest
+import CoreLocation
 @testable import Weather
 
 class WeatherViewModelTests: XCTestCase {
@@ -48,5 +49,21 @@ class WeatherViewModelTests: XCTestCase {
         waitForExpectations(timeout: 10, handler: nil)
     }
     
+    func testDownloadUVIfSuccess() {
+        let mockCLGeocoder = MockCLGeocoder()
+        let dummyCLPlacemark = CLPlacemark()
+        mockCLGeocoder.nextCLPlacemarks = [dummyCLPlacemark]
+
+        viewModel = WeatherViewModel(service: service, cityName: "London", type: .uvValue, geocoder: mockCLGeocoder)
+        
+        var outputs = viewModel.outputs
+        let expectModel = getUV()
+        
+        outputs.uvValue = { (uv) in
+            XCTAssert(uv != expectModel, "UV Model is invalid")
+        }
+        
+        viewModel.inputs.checkWeatherCondition()
+    }
     
 }

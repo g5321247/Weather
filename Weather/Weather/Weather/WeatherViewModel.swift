@@ -31,12 +31,12 @@ class WeatherViewModel: WeatherViewModelInputs, WeatherViewModelOutputs {
 
     // MARK: - Private Varible
     private let service: WeatherServiceSpec
-    private let geocoder: CLGeocoder
+    private let geocoder: CLGeocoderProtocol
     private let cityName: String
     private var type: WeatherType = .currentWeather
     
     // MARK: - Dependency Injection
-    init(service: WeatherServiceSpec, cityName: String, type: WeatherType, geocoder: CLGeocoder = CLGeocoder()) {
+    init(service: WeatherServiceSpec, cityName: String, type: WeatherType, geocoder: CLGeocoderProtocol = CLGeocoder()) {
         self.service = service
         self.geocoder = geocoder
         self.cityName = cityName
@@ -58,7 +58,6 @@ extension WeatherViewModel {
     
     func downloadCurrentWeather() {
         service.downloadWeather(cityName: cityName) { [weak self] (weather, error) in
-            
             DispatchQueue.main.async {
                 guard let weather = weather else {
                     self?.error?(error!)
@@ -70,18 +69,13 @@ extension WeatherViewModel {
     }
     
     func downloadUV() {
-        getCoordinateFrom(address: cityName) { [weak self] coordinate, error in
-            
-            guard let coordinate = coordinate, error == nil else {
+        geocoder.getLatitudeAndLongitudeString(cityName) { [weak self] (location, error) in
+            guard let (latitude, longitude) = location else {
                 self?.error?(error!)
                 return
             }
             
-            let latitude = String(format: "%.2f", coordinate.latitude)
-            let longitude = String(format: "%.2f", coordinate.longitude)
-            
             self?.service.downloadUVValue(latitude: latitude, longitude: longitude, completion: { (uv, error) in
-                
                 DispatchQueue.main.async {
                     guard let uv = uv else {
                         self?.error?(error!)
@@ -91,9 +85,5 @@ extension WeatherViewModel {
                 }
             })
         }
-    }
-    
-    func getCoordinateFrom(address: String, completion: @escaping(_ coordinate: CLLocationCoordinate2D?, _ error: Error?) -> () ) {
-        geocoder.geocodeAddressString(address) { completion($0?.first?.location?.coordinate, $1) }
     }
 }

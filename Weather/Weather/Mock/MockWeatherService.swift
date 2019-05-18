@@ -21,6 +21,9 @@ class MockWeatherService: WeatherServiceSpec {
     }
     
     func downloadUVValue(latitude: String, longitude: String, completion: @escaping (UV?, Error?) -> Void) {
+        self.latitude = latitude
+        self.longitude = longitude
+        
         let uv = getUV()
         
         completion(uv, error)
