@@ -49,8 +49,8 @@ extension NetworkHandler {
         dataTask = session.dataTask(with: request) { (data, response, error) in
             defer { self.dataTask = nil }
             
-            guard error == nil else {
-                completion(nil, error!)
+            if let error = error {
+                completion(nil, error)
                 return
             }
             

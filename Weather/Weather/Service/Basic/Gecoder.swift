@@ -19,7 +19,7 @@ extension CLGeocoder: CLGeocoderProtocol {
     func getLatitudeAndLongitudeString(_ addressString: String, completionHandler: @escaping LocationHadler) {
         getCoordinateFrom(address: addressString) { [weak self] (location, error) in
             guard let location = location else {
-                completionHandler(nil, error!)
+                if let error = error { completionHandler(nil, error) }
                 return
             }
             

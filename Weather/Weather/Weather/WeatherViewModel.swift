@@ -16,7 +16,7 @@ protocol WeatherViewModelInputs {
 protocol WeatherViewModelOutputs {
     var weather: ((Weather) -> Void)? { get set }
     var uvValue: ((UV) -> Void)? { get set }
-    var error: ((Error) -> Void)? { get set }
+    var error: ((String) -> Void)? { get set }
 }
 
 class WeatherViewModel: WeatherViewModelInputs, WeatherViewModelOutputs {
@@ -26,7 +26,7 @@ class WeatherViewModel: WeatherViewModelInputs, WeatherViewModelOutputs {
     
     // MARK: - ViewModelOutputParameter
     var weather: ((Weather) -> Void)?
-    var error: ((Error) -> Void)?
+    var error: ((String) -> Void)?
     var uvValue: ((UV) -> Void)?
 
     // MARK: - Private Varible
@@ -59,8 +59,9 @@ extension WeatherViewModel {
     func downloadCurrentWeather() {
         service.downloadWeather(cityName: cityName) { [weak self] (weather, error) in
             DispatchQueue.main.async {
+                
                 guard let weather = weather else {
-                    self?.error?(error!)
+                    self?.error?(error?.localizedDescription ?? "")
                     return
                 }
                 self?.weather?(weather)
@@ -71,14 +72,14 @@ extension WeatherViewModel {
     func downloadUV() {
         geocoder.getLatitudeAndLongitudeString(cityName) { [weak self] (location, error) in
             guard let (latitude, longitude) = location else {
-                self?.error?(error!)
+                self?.error?(error?.localizedDescription ?? "")
                 return
             }
             
             self?.service.downloadUVValue(latitude: latitude, longitude: longitude, completion: { (uv, error) in
                 DispatchQueue.main.async {
                     guard let uv = uv else {
-                        self?.error?(error!)
+                        self?.error?(error?.localizedDescription ?? "")
                         return
                     }
                     self?.uvValue?(uv)

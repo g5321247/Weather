@@ -36,9 +36,9 @@ class WeatherViewController: UIViewController {
     private func bindViewModel() {
         var outputs = viewModel.outputs
         
-        outputs.error = { [weak self] (error) in
+        outputs.error = { [weak self] (errorMessage) in
             self?.llCityName.text = "錯誤"
-            self?.llTemperature.text = error.localizedDescription
+            self?.llTemperature.text = errorMessage
         }
         
         outputs.weather = { [weak self] (weather) in
