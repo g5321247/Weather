@@ -17,7 +17,6 @@ class MockURLSession: SessionProtocol {
     var nextResponse: HTTPURLResponse?
     
     func dataTask(with request: URLRequest, completionHandler: @escaping CompletionHandler) -> URLSessionDataTaskProtocol {
-        
         self.request = request
         
         completionHandler(nextData, nextResponse, nextError)

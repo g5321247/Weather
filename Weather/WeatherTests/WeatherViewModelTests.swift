@@ -30,7 +30,7 @@ class WeatherViewModelTests: XCTestCase {
     // UV
     func testLocationConvert() {
         viewModel = WeatherViewModel(service: service, cityName: "London", type: .uvValue)
-        let expect = expectation(description: "123")
+        let expect = expectation(description: "Get Coordinate")
 
         let expectLatitude = "51.50"
         let expectLongitude = "-0.13"
@@ -45,7 +45,7 @@ class WeatherViewModelTests: XCTestCase {
             expect.fulfill()
         }
         
-        waitForExpectations(timeout: 3, handler: nil)
+        waitForExpectations(timeout: 10, handler: nil)
     }
     
     

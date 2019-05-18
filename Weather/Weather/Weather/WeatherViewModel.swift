@@ -54,7 +54,7 @@ class WeatherViewModel: WeatherViewModelInputs, WeatherViewModelOutputs {
     }
 }
 
-private extension WeatherViewModel {
+extension WeatherViewModel {
     
     func downloadCurrentWeather() {
         service.downloadWeather(cityName: cityName) { [weak self] (weather, error) in

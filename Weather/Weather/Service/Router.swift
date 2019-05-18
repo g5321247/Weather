@@ -13,7 +13,8 @@ protocol URLRequestConvertible {
     var path: String { get }
     var method: APIMethod { get }
     var header: [String: String] { get }
-    var parameters: [String: Any] { get }    
+    var parameters: [String: Any] { get }
+//    var body
 }
 
 enum Router {

@@ -22,34 +22,6 @@ class NetworkHandlerTests: XCTestCase {
         networkHandler = nil
     }
     
-    // Request
-    func testRequestURL() {
-        let url = URL(string: "www.google.com")!
-        let request = URLRequest(url: url)
-        
-        networkHandler.sendRequest(request: request) { (_: Data?, _) in}
-        
-        XCTAssert(session.request!.url == url)
-    }
-    
-    func testRequestMethod() {
-        let url = URL(string: "www.google.com")!
-        let request = URLRequest(url: url)
-        
-        networkHandler.sendRequest(request: request) { (_: Data?, _) in}
-
-        XCTAssert(session.request!.httpMethod == APIMethod.get.rawValue)
-    }
-    
-    func testRequestIsCalledIfSendRequest() {
-        let url = URL(string: "www.google.com")!
-        let request = URLRequest(url: url)
-        
-        networkHandler.sendRequest(request: request) { (_: Data?, _) in}
-        
-        XCTAssertTrue(session.nextDataTask.isCalled)
-    }
-    
     // Parse
     func testWeatherModelIfParseSuccess() {
         let data = getWeatherData()
@@ -98,7 +70,7 @@ class NetworkHandlerTests: XCTestCase {
         
         var actualError: NetworkError?
         
-        networkHandler.sendRequest(request: request) { (_: Data?, error) in
+        networkHandler.sendRequest(request: request) { (_, error) in
             actualError = error as? NetworkError
         }
         
@@ -113,7 +85,7 @@ class NetworkHandlerTests: XCTestCase {
         let expectedError = NSError(domain: "error", code: 0, userInfo: nil)
         session.nextError = expectedError
         
-        networkHandler.sendRequest(request: request) { (_: Data?, error) in
+        networkHandler.sendRequest(request: request) { (_, error) in
             XCTAssert(error! as NSError == expectedError)
         }
     }
@@ -127,7 +99,7 @@ class NetworkHandlerTests: XCTestCase {
         
         var actualError: NetworkError?
         
-        networkHandler.sendRequest(request: request) { (_: Data?, error) in
+        networkHandler.sendRequest(request: request) { (_, error) in
             actualError = error as? NetworkError
         }
         XCTAssert(actualError! == NetworkError.responseUnsuccessful(statusCode: 199))
@@ -140,7 +112,7 @@ class NetworkHandlerTests: XCTestCase {
         session.nextResponse = HTTPURLResponse(statusCode: 300)
         var actualError: NetworkError?
         
-        networkHandler.sendRequest(request: request) { (_: Data?, error) in
+        networkHandler.sendRequest(request: request) { (_, error) in
             actualError = error as? NetworkError
         }
         XCTAssert(actualError! == NetworkError.responseUnsuccessful(statusCode: 300))
@@ -153,13 +125,13 @@ class NetworkHandlerTests: XCTestCase {
         session.nextResponse = nil
         var actualError: NetworkError?
         
-        networkHandler.sendRequest(request: request) { (_: Data?, error) in
+        networkHandler.sendRequest(request: request) { (_, error) in
             actualError = error as? NetworkError
         }
         XCTAssert(actualError! == NetworkError.requestFailed)
     }
     
-    // get URL
+    // URL
     func testURLIfURLIsInvalid() {
         let urlObject = MockURLRequestConvertible()
         
@@ -182,7 +154,56 @@ class NetworkHandlerTests: XCTestCase {
         XCTAssert(expectResult == result)
     }
     
-    // get URLRequest
+    func testURLWithoutParameters() {
+        var url = URL(string: "https://api.openweathermap.org/data/2.5/weather")!
+        let parameter: [String: Any] = [:]
+        
+        let expectResult = URL(string: "https://api.openweathermap.org/data/2.5/weather")
+        
+        networkHandler.configureParameters(url: &url, with: parameter)
+        
+        XCTAssert(expectResult == url)
+    }
+    
+    func testURLWithParameters() {
+        var url = URL(string: "https://api.openweathermap.org/data/2.5/weather")!
+        let parameter = ["q": "London"]
+        
+        let expectResult = URL(string: "https://api.openweathermap.org/data/2.5/weather?q=London")
+        
+        networkHandler.configureParameters(url: &url, with: parameter)
+        
+        XCTAssert(expectResult == url)
+    }
+    
+    // URLRequest
+    func testSessionRequestURL() {
+        let url = URL(string: "www.google.com")!
+        let request = URLRequest(url: url)
+        
+        networkHandler.sendRequest(request: request) { (_, _) in}
+        
+        XCTAssert(session.request!.url == url)
+    }
+    
+    func testSessionRequestMethod() {
+        let url = URL(string: "www.google.com")!
+        let request = URLRequest(url: url)
+        
+        networkHandler.sendRequest(request: request) { (_, _) in}
+        
+        XCTAssert(session.request!.httpMethod == APIMethod.get.rawValue)
+    }
+    
+    func testSessionRequestIsCalledIfSendRequest() {
+        let url = URL(string: "www.google.com")!
+        let request = URLRequest(url: url)
+        
+        networkHandler.sendRequest(request: request) { (_, _) in}
+        
+        XCTAssertTrue(session.nextDataTask.isCalled)
+    }
+    
     func testURLRequestIfURLIsInValid() {
         let urlObject = MockURLRequestConvertible()
         
@@ -256,5 +277,21 @@ class NetworkHandlerTests: XCTestCase {
         }
         
         XCTAssert(expectError == actualError)
+    }
+    
+    func testCancelDownloadSuccessIfRequestSent() {
+        let url = URL(string: "www.google.com")!
+        let request = URLRequest(url: url)
+        
+        networkHandler.sendRequest(request: request) { (_, _) in}
+        networkHandler.cancelDownload()
+        
+        XCTAssertTrue(session.nextDataTask.isCalled, "task is not canceled")
+    }
+    
+    func testCancelDownloadFailIfRequestNotSent() {
+        networkHandler.cancelDownload()
+        
+        XCTAssertFalse(session.nextDataTask.isCalled, "task is canceled")
     }
 }

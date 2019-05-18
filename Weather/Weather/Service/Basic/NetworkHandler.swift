@@ -41,9 +41,11 @@ final class NetworkHandler: NetworkHandlerSpec {
     func cancelDownload() {
         dataTask?.cancel()
     }
+}
+
+extension NetworkHandler {
     
     func sendRequest(request: URLRequest, completion: @escaping (Data?, Error?) -> Void) {
-        
         dataTask = session.dataTask(with: request) { (data, response, error) in
             defer { self.dataTask = nil }
             
@@ -103,13 +105,10 @@ final class NetworkHandler: NetworkHandlerSpec {
             throw error
         }
     }
-}
-
-extension NetworkHandler {
+    
     // parameters: encode & added
-    private func configureParameters(url: inout URL, with parameters: [String: Any]) {
+    func configureParameters(url: inout URL, with parameters: [String: Any]) {
         if var urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false), !parameters.isEmpty {
-            
             urlComponents.queryItems = [URLQueryItem]()
             
             for item in parameters {
