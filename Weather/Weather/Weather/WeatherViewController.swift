@@ -24,7 +24,7 @@ class WeatherViewController: UIViewController {
         super.viewDidLoad()
 
         bindViewModel()
-        viewModel.inputs.searchCityWeather()
+        viewModel.inputs.checkWeatherCondition()
     }
 
     func inject(cityName: String, type: WeatherType) {

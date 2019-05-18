@@ -47,4 +47,6 @@ class WeatherViewModelTests: XCTestCase {
         
         waitForExpectations(timeout: 3, handler: nil)
     }
+    
+    
 }

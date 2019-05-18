@@ -10,7 +10,7 @@ import Foundation
 import CoreLocation
 
 protocol WeatherViewModelInputs {
-    func searchCityWeather()
+    func checkWeatherCondition()
 }
 
 protocol WeatherViewModelOutputs {
@@ -31,18 +31,20 @@ class WeatherViewModel: WeatherViewModelInputs, WeatherViewModelOutputs {
 
     // MARK: - Private Varible
     private let service: WeatherServiceSpec
+    private let geocoder: CLGeocoder
     private let cityName: String
     private var type: WeatherType = .currentWeather
     
     // MARK: - Dependency Injection
-    init(service: WeatherServiceSpec, cityName: String, type: WeatherType) {
+    init(service: WeatherServiceSpec, cityName: String, type: WeatherType, geocoder: CLGeocoder = CLGeocoder()) {
         self.service = service
+        self.geocoder = geocoder
         self.cityName = cityName
         self.type = type
     }
 
     // MARK: - ViewModelInputs
-    func searchCityWeather() {
+    func checkWeatherCondition() {
         switch type {
         case .currentWeather:
             downloadCurrentWeather()
@@ -50,8 +52,11 @@ class WeatherViewModel: WeatherViewModelInputs, WeatherViewModelOutputs {
             downloadUV()
         }
     }
+}
+
+private extension WeatherViewModel {
     
-    private func downloadCurrentWeather() {
+    func downloadCurrentWeather() {
         service.downloadWeather(cityName: cityName) { [weak self] (weather, error) in
             
             DispatchQueue.main.async {
@@ -64,7 +69,7 @@ class WeatherViewModel: WeatherViewModelInputs, WeatherViewModelOutputs {
         }
     }
     
-    private func downloadUV() {
+    func downloadUV() {
         getCoordinateFrom(address: cityName) { [weak self] coordinate, error in
             
             guard let coordinate = coordinate, error == nil else {
@@ -89,6 +94,6 @@ class WeatherViewModel: WeatherViewModelInputs, WeatherViewModelOutputs {
     }
     
     func getCoordinateFrom(address: String, completion: @escaping(_ coordinate: CLLocationCoordinate2D?, _ error: Error?) -> () ) {
-        CLGeocoder().geocodeAddressString(address) { completion($0?.first?.location?.coordinate, $1) }
+        geocoder.geocodeAddressString(address) { completion($0?.first?.location?.coordinate, $1) }
     }
 }
