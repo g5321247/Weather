@@ -87,7 +87,7 @@ extension NetworkHandler {
     func getURL(model: URLRequestConvertible) throws -> URL {
         let uri = model.domain + model.path
         guard let url = URL(string: uri) else {
-            throw ConvertError.cannotConvertToURL
+            throw ConvertError.url
         }
         return url
     }

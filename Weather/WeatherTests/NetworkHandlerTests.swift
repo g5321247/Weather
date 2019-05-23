@@ -139,7 +139,7 @@ class NetworkHandlerTests: XCTestCase {
             _ = try networkHandler.getURL(model: urlObject)
         } catch {
             let actualError = error as? ConvertError
-            XCTAssert(actualError == ConvertError.cannotConvertToURL)
+            XCTAssert(actualError == ConvertError.url)
         }
     }
     
@@ -211,7 +211,7 @@ class NetworkHandlerTests: XCTestCase {
             _ = try networkHandler.getRequest(model: urlObject)
         } catch {
             let actualError = error as? ConvertError
-            XCTAssert(actualError == ConvertError.cannotConvertToURL)
+            XCTAssert(actualError == ConvertError.url)
         }
     }
     
@@ -231,7 +231,7 @@ class NetworkHandlerTests: XCTestCase {
     // Download Process
     func testDownloadFailIfURLIsInvalid() {
         let urlObject = MockURLRequestConvertible()
-        let expectError = ConvertError.cannotConvertToURL
+        let expectError = ConvertError.url
         var actualError: ConvertError?
 
         networkHandler.download(model: urlObject) { (_: UV?, error) in

@@ -59,7 +59,6 @@ extension WeatherViewModel {
     func downloadCurrentWeather() {
         service.downloadWeather(cityName: cityName) { [weak self] (weather, error) in
             DispatchQueue.main.async {
-                
                 guard let weather = weather else {
                     self?.error?(error?.localizedDescription ?? "")
                     return
@@ -70,7 +69,7 @@ extension WeatherViewModel {
     }
     
     func downloadUV() {
-        geocoder.getLatitudeAndLongitudeString(cityName) { [weak self] (location, error) in
+        geocoder.getCoordinateStrFrom(cityName) { [weak self] (location, error) in
             guard let (latitude, longitude) = location else {
                 self?.error?(error?.localizedDescription ?? "")
                 return

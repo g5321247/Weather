@@ -10,6 +10,8 @@
 		4B4578522283D092001CD685 /* WeatherViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B4578512283D092001CD685 /* WeatherViewModelTests.swift */; };
 		4B4578552283F445001CD685 /* MockWeatherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B4578542283F445001CD685 /* MockWeatherService.swift */; };
 		4B9A11102282B61300ED3AFD /* Weather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9A110F2282B61300ED3AFD /* Weather.swift */; };
+		4BB74BDF22967D33000000C2 /* CLGeocoderExtensionTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BB74BDE22967D33000000C2 /* CLGeocoderExtensionTest.swift */; };
+		4BB74BE122969B78000000C2 /* MockCLGeocoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BB74BE022969B78000000C2 /* MockCLGeocoder.swift */; };
 		C812054022814FAC00612003 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C812053F22814FAC00612003 /* AppDelegate.swift */; };
 		C812054222814FAC00612003 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C812054122814FAC00612003 /* ViewController.swift */; };
 		C812054522814FAC00612003 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C812054322814FAC00612003 /* Main.storyboard */; };
@@ -55,6 +57,8 @@
 		4B4578512283D092001CD685 /* WeatherViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherViewModelTests.swift; sourceTree = "<group>"; };
 		4B4578542283F445001CD685 /* MockWeatherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWeatherService.swift; sourceTree = "<group>"; };
 		4B9A110F2282B61300ED3AFD /* Weather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Weather.swift; sourceTree = "<group>"; };
+		4BB74BDE22967D33000000C2 /* CLGeocoderExtensionTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLGeocoderExtensionTest.swift; sourceTree = "<group>"; };
+		4BB74BE022969B78000000C2 /* MockCLGeocoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCLGeocoder.swift; sourceTree = "<group>"; };
 		C812053C22814FAC00612003 /* Weather.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Weather.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C812053F22814FAC00612003 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C812054122814FAC00612003 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -161,6 +165,7 @@
 			isa = PBXGroup;
 			children = (
 				C897D8342283080100ACB66B /* NetworkHandlerTests.swift */,
+				4BB74BDE22967D33000000C2 /* CLGeocoderExtensionTest.swift */,
 				C897D83D22834AAB00ACB66B /* WeatherServiceTests.swift */,
 				4B4578512283D092001CD685 /* WeatherViewModelTests.swift */,
 				C812055622814FAE00612003 /* Info.plist */,
@@ -205,6 +210,7 @@
 				C897D839228340CA00ACB66B /* MockData.swift */,
 				C8F701692283B996002AAB9D /* MockURLRequestConvertible.swift */,
 				4B4578542283F445001CD685 /* MockWeatherService.swift */,
+				4BB74BE022969B78000000C2 /* MockCLGeocoder.swift */,
 			);
 			path = Mock;
 			sourceTree = "<group>";
@@ -353,6 +359,7 @@
 			files = (
 				C8F701672283B24E002AAB9D /* WEError.swift in Sources */,
 				C897D831228306BC00ACB66B /* Session.swift in Sources */,
+				4BB74BE122969B78000000C2 /* MockCLGeocoder.swift in Sources */,
 				C8F7016A2283B996002AAB9D /* MockURLRequestConvertible.swift in Sources */,
 				C897D83A228340CA00ACB66B /* MockData.swift in Sources */,
 				C81205752281556B00612003 /* WeatherService.swift in Sources */,
@@ -375,6 +382,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4BB74BDF22967D33000000C2 /* CLGeocoderExtensionTest.swift in Sources */,
 				C897D83E22834AAB00ACB66B /* WeatherServiceTests.swift in Sources */,
 				C897D8352283080100ACB66B /* NetworkHandlerTests.swift in Sources */,
 				4B4578522283D092001CD685 /* WeatherViewModelTests.swift in Sources */,

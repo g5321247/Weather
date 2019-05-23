@@ -16,5 +16,6 @@ enum NetworkError: Error, Equatable {
 }
 
 enum ConvertError: Error, Equatable {
-    case cannotConvertToURL
+    case url
+    case address
 }

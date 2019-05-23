@@ -11,15 +11,15 @@ import CoreLocation
 protocol CLGeocoderProtocol {
     typealias LocationHadler = (LocationString?, Error?) -> Void
     typealias LocationString = (latitude: String, longitude: String)
-    func getLatitudeAndLongitudeString(_ addressString: String, completionHandler: @escaping LocationHadler)
+    func getCoordinateStrFrom(_ addressString: String, completionHandler: @escaping LocationHadler)
 }
 
 extension CLGeocoder: CLGeocoderProtocol {
     
-    func getLatitudeAndLongitudeString(_ addressString: String, completionHandler: @escaping LocationHadler) {
+    func getCoordinateStrFrom(_ addressString: String, completionHandler: @escaping LocationHadler) {
         getCoordinateFrom(address: addressString) { [weak self] (location, error) in
             guard let location = location else {
-                if let error = error { completionHandler(nil, error) }
+                completionHandler(nil, ConvertError.address)
                 return
             }
             
@@ -39,17 +39,5 @@ extension CLGeocoder: CLGeocoderProtocol {
         self.geocodeAddressString(address) {
             completion($0?.first?.location?.coordinate, $1)
         }
-    }
-}
-
-class MockCLGeocoder: CLGeocoderProtocol {
-    
-    var nextLocationString: LocationString?
-    var nextError: Error?
-    private(set) var addressString: String?
-    
-    func getLatitudeAndLongitudeString(_ addressString: String, completionHandler: @escaping LocationHadler) {
-        self.addressString = addressString
-        completionHandler(nextLocationString, nextError)
     }
 }
