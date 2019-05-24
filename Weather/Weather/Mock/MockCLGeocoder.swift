@@ -12,10 +12,10 @@ class MockCLGeocoder: CLGeocoderProtocol {
     
     var nextLocationString: LocationString?
     var nextError: Error?
-    private(set) var addressString: String?
+    private(set) var cityName: String?
     
     func getCoordinateStrFrom(_ addressString: String, completionHandler: @escaping LocationHadler) {
-        self.addressString = addressString
+        cityName = addressString
         completionHandler(nextLocationString, nextError)
     }
 }

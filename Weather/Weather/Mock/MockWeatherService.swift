@@ -13,6 +13,8 @@ class MockWeatherService: WeatherServiceSpec {
     var nextError: Error?
     var nextWeather: Weather?
     var nextUV: UV?
+    
+    private(set) var cityName: String?
     private(set) var latitude: String?
     private(set) var longitude: String?
     private(set) var isCalled: Bool = false
@@ -20,6 +22,7 @@ class MockWeatherService: WeatherServiceSpec {
     func downloadWeather(cityName: String, completion: @escaping (Weather?, Error?) -> Void) {
         isCalled = true
         
+        self.cityName = cityName
         completion(nextWeather, nextError)
     }
     

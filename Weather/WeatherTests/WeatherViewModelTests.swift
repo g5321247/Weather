@@ -33,6 +33,7 @@ class WeatherViewModelTests: XCTestCase {
     
     func testDownloadFunctionIfTypeIsUvValue() {
         viewModel = WeatherViewModel(service: service, cityName: "London", type: .uvValue, geocoder: geocoder)
+        
         geocoder.nextLocationString = ("51.50", "-0.13")
         
         viewModel.inputs.checkWeatherCondition()
@@ -41,50 +42,169 @@ class WeatherViewModelTests: XCTestCase {
     }
     
     // Current Weather
+    func testCityNameBeforeSendingRequest() {
+        let city = "London"
+        let expectCity = "London"
+        
+        viewModel = WeatherViewModel(service: service, cityName: city, type: .currentWeather, geocoder: geocoder)
+
+        viewModel.checkWeatherCondition()
+        
+        XCTAssert(service.cityName == expectCity, "request city incorrect")
+    }
+    
     func testCurrentWeatherIfHandleSuccess() {
+        service.nextWeather = getWeather()
         
-        viewModel.outputs.weather
+        let expect = expectation(description: "get current weather")
+        let expectWeather = Weather(main: Main(temp: 285.81), name: "London", cod: 200)
+        var outputs = viewModel.outputs
         
+        outputs.weather = { (weather) in
+            XCTAssert(expectWeather == weather, "current weather incorrect")
+            expect.fulfill()
+        }
+        
+        viewModel.inputs.checkWeatherCondition()
+        waitForExpectations(timeout: 10, handler: nil)
+    }
+    
+    func testErrorMessageIfServiceFailed() {
+        service.nextError = NetworkError.invalidData
+        
+        let expect = expectation(description: "get error of invalidData")
+        let expectErrorMessage = NetworkError.invalidData.localizedDescription
+        var outputs = viewModel.outputs
+        
+        outputs.error = { (errorMessage) in
+            XCTAssert(expectErrorMessage == errorMessage, "error message incorrect")
+            expect.fulfill()
+        }
+        
+        viewModel.inputs.checkWeatherCondition()
+        waitForExpectations(timeout: 10, handler: nil)
+    }
+
+    func testNoErrorMessageIfServiceFailed() {
+        var outputs = viewModel.outputs
+        
+        let expect = expectation(description: "get unexpected error Messgae")
+        let expectErrorMessage = ""
+        
+        outputs.error = { (errorMessage) in
+            XCTAssert(expectErrorMessage == errorMessage, "error message incorrect")
+            expect.fulfill()
+        }
+        
+        viewModel.inputs.checkWeatherCondition()
+        waitForExpectations(timeout: 10, handler: nil)
+    }
+
+    
+    // UV
+    func testCityNameBeforeTransformCoordinate() {
+        let city = "London"
+        let expectCity = "London"
+        
+        viewModel = WeatherViewModel(service: service, cityName: city, type: .uvValue, geocoder: geocoder)
+        
+        viewModel.checkWeatherCondition()
+        
+        XCTAssert(geocoder.cityName == expectCity, "request city incorrect")
+    }
+
+    func testLocationStrBeforeSendingRequest() {
+        viewModel = WeatherViewModel(service: service, cityName: "London", type: .uvValue, geocoder: geocoder)
+        
+        let expectLatitude = "51.50"
+        let expectLongitude = "-0.13"
+        
+        geocoder.nextLocationString = ("51.50", "-0.13")
+        viewModel.checkWeatherCondition()
+        
+        XCTAssert(service.latitude == expectLatitude, "latitude incorrect")
+        XCTAssert(service.longitude == expectLongitude, "longitude incorrect")
+    }
+
+    func testErrorMessageIfTransformCoordinateFailed() {
+        viewModel = WeatherViewModel(service: service, cityName: "London", type: .uvValue, geocoder: geocoder)
+        geocoder.nextError = ConvertError.address
+        
+        let expectErrorMessage = ConvertError.address.localizedDescription
+        var outputs = viewModel.outputs
+
+        outputs.error = { (errorMessage) in
+            XCTAssert(expectErrorMessage == errorMessage, "error message incorrect")
+        }
+
         viewModel.inputs.checkWeatherCondition()
     }
     
-    // UV
-//    func testAddressStr() {
-//        let mockCLGeocoder = MockCLGeocoder()
-//        viewModel = WeatherViewModel(service: service, cityName: "London", type: .uvValue,geocoder: mockCLGeocoder)
-//        let expect = expectation(description: "Get Coordinate")
-//
-//        let expectLatitude = "51.50"
-//        let expectLongitude = "-0.13"
-//
-//        viewModel.getCoordinateFrom(address: "London") { (coordinate, _) in
-//            let latitude = String(format: "%.2f", coordinate!.latitude)
-//            let longitude = String(format: "%.2f", coordinate!.longitude)
-//            
-//            XCTAssert(expectLatitude == latitude)
-//            XCTAssert(expectLongitude == longitude)
-//            
-//            expect.fulfill()
-//        }
-//        
-//        waitForExpectations(timeout: 10, handler: nil)
-//    }
-//    
-//    func testDownloadUVIfSuccess() {
-//        let mockCLGeocoder = MockCLGeocoder()
-//        let dummyCLPlacemark = CLPlacemark()
-//        mockCLGeocoder.nextCLPlacemarks = [dummyCLPlacemark]
-//
-//        viewModel = WeatherViewModel(service: service, cityName: "London", type: .uvValue, geocoder: mockCLGeocoder)
-//        
-//        var outputs = viewModel.outputs
-//        let expectModel = getUV()
-//        
-//        outputs.uvValue = { (uv) in
-//            XCTAssert(uv != expectModel, "UV Model is invalid")
-//        }
-//        
-//        viewModel.inputs.checkWeatherCondition()
-//    }
+    func testNilErrorMessageIfTransformCoordinateFailed() {
+        viewModel = WeatherViewModel(service: service, cityName: "London", type: .uvValue, geocoder: geocoder)
+        
+        let expectErrorMessage = ""
+        var outputs = viewModel.outputs
+        
+        outputs.error = { (errorMessage) in
+            XCTAssert(expectErrorMessage == errorMessage, "error message incorrect")
+        }
+        
+        viewModel.inputs.checkWeatherCondition()
+    }
+
+    func testUVValueIfHandleSuccess() {
+        viewModel = WeatherViewModel(service: service, cityName: "London", type: .uvValue, geocoder: geocoder)
+
+        geocoder.nextLocationString = ("51.50", "-0.13")
+        service.nextUV = getUV()
+        
+        let expect = expectation(description: "get uv")
+        let expectUV = UV(value: 4.24)
+        var outputs = viewModel.outputs
+        
+        outputs.uvValue = { (uv) in
+            XCTAssert(expectUV == uv, "uv incorrect")
+            expect.fulfill()
+        }
+        
+        viewModel.inputs.checkWeatherCondition()
+        waitForExpectations(timeout: 10, handler: nil)
+    }
     
+    func testErrorMessageIfIfServiceFailed() {
+        viewModel = WeatherViewModel(service: service, cityName: "London", type: .uvValue, geocoder: geocoder)
+        geocoder.nextLocationString = ("51.50", "-0.13")
+        service.nextError = NetworkError.invalidData
+        
+        let expect = expectation(description: "get unexpected error Messgae")
+        let expectErrorMessage = NetworkError.invalidData.localizedDescription
+        var outputs = viewModel.outputs
+        
+        outputs.error = { (errorMessage) in
+            XCTAssert(expectErrorMessage == errorMessage, "error message incorrect")
+            expect.fulfill()
+        }
+        
+        viewModel.inputs.checkWeatherCondition()
+        waitForExpectations(timeout: 10, handler: nil)
+    }
+    
+    func testNilErrorMessageIfServiceFailed() {
+        viewModel = WeatherViewModel(service: service, cityName: "London", type: .uvValue, geocoder: geocoder)
+        geocoder.nextLocationString = ("51.50", "-0.13")
+        
+        let expect = expectation(description: "get unexpected error Messgae")
+        let expectErrorMessage = ""
+        var outputs = viewModel.outputs
+        
+        outputs.error = { (errorMessage) in
+            XCTAssert(expectErrorMessage == errorMessage, "error message incorrect")
+            expect.fulfill()
+        }
+        
+        viewModel.inputs.checkWeatherCondition()
+        waitForExpectations(timeout: 10, handler: nil)
+    }
+
 }

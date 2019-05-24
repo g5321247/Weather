@@ -25,7 +25,7 @@ class CLGeocoderExtensionTest: XCTestCase {
     }
 
     // CLLocation
-    func testValidCoordinateIfAddressIsValid() {
+    func testValidCoordinateIfValidAddress() {
         let city = "London"
         let expect = expectation(description: "get coordinate")
 
@@ -41,7 +41,24 @@ class CLGeocoderExtensionTest: XCTestCase {
         waitForExpectations(timeout: 10, handler: nil)
     }
     
-    func testNilCoordinatefAddressIsInvalid() {
+    func testValidCoordinateIfValidAddressFirstLetterIsLowerCase() {
+        let city = "london"
+        let expect = expectation(description: "get coordinate")
+        
+        let expectLocation = CLLocationCoordinate2D(latitude: 51.5001524, longitude: -0.1262362)
+        
+        geocoder.getCoordinateFrom(address: city) { (locations, _) in
+            XCTAssert(expectLocation.latitude == locations?.latitude, "latitude incorrect")
+            XCTAssert(expectLocation.longitude == locations?.longitude, "longitude incorrect")
+            
+            expect.fulfill()
+        }
+        
+        waitForExpectations(timeout: 10, handler: nil)
+    }
+
+    
+    func testNilCoordinatefInvalidAddress() {
         let city = "Yo"
         let expect = expectation(description: "locations should be nil")
         
@@ -54,7 +71,7 @@ class CLGeocoderExtensionTest: XCTestCase {
         waitForExpectations(timeout: 10, handler: nil)
     }
     
-    func testErrorfAddressIsInvalid() {
+    func testErrorfInvalidAddress() {
         let city = "Yo"
         let expect = expectation(description: "get error")
         
@@ -78,7 +95,7 @@ class CLGeocoderExtensionTest: XCTestCase {
     }
     
     // Get Address Latitude & Longitude String
-    func testValidCoordinateStringIfAddressIsValid() {
+    func testValidCoordinateStringIfValidAddress() {
         let city = "London"
         let expect = expectation(description: "get coordinate String")
         
@@ -92,7 +109,7 @@ class CLGeocoderExtensionTest: XCTestCase {
         waitForExpectations(timeout: 10, handler: nil)
     }
     
-    func testInvalidCoordinateStringIfAddressIsInvalid() {
+    func testInvalidCoordinateStringIfInvalidAddress() {
         let city = "Yo"
         let expect = expectation(description: "locationsStr should be nil")
         
@@ -104,7 +121,7 @@ class CLGeocoderExtensionTest: XCTestCase {
         waitForExpectations(timeout: 10, handler: nil)
     }
     
-    func testErrorCoordinateStringIfAddressIsInvalid() {
+    func testErrorCoordinateStringIfInvalidAddress() {
         let city = "Yo"
         let expect = expectation(description: "locationsStr should be nil")
         

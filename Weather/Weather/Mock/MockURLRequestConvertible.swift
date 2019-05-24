@@ -9,6 +9,8 @@
 import Foundation
 
 class MockURLRequestConvertible: URLRequestConvertible {
+    var body: Data?
+    
     var domain: String = ""
     
     var path: String = ""
