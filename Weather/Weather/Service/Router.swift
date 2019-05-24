@@ -14,7 +14,7 @@ protocol URLRequestConvertible {
     var method: APIMethod { get }
     var header: [String: String] { get }
     var parameters: [String: Any] { get }
-//    var body
+    var body: Data? { get }
 }
 
 enum Router {
@@ -61,6 +61,17 @@ extension Router: URLRequestConvertible {
         }
         
         return params
+    }
+    
+    var body: Data? {
+//        if case .reward(let type) = self, case .redeem(let redeem) = type {
+//            var params = self.parameters
+//            params["redeem_code"] = redeem
+//            return try? JSONSerialization.data(withJSONObject: params, options: .prettyPrinted)
+//        } else {
+//            return nil
+//        }
+        return nil
     }
 }
 

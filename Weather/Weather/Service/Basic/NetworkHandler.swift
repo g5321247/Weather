@@ -99,6 +99,7 @@ extension NetworkHandler {
             var request = URLRequest(url: url) // request
             request.httpMethod = model.method.rawValue  // method
             request.allHTTPHeaderFields = model.header  // header
+            request.httpBody = model.body
             
             return request
         } catch {
