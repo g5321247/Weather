@@ -10,22 +10,25 @@ import Foundation
 
 class MockWeatherService: WeatherServiceSpec {
     
-    private let error = NetworkError.invalidData
+    var nextError: Error?
+    var nextWeather: Weather?
+    var nextUV: UV?
     private(set) var latitude: String?
     private(set) var longitude: String?
+    private(set) var isCalled: Bool = false
     
     func downloadWeather(cityName: String, completion: @escaping (Weather?, Error?) -> Void) {
-        let weather = getWeather()
+        isCalled = true
         
-        completion(weather, error)
+        completion(nextWeather, nextError)
     }
     
     func downloadUVValue(latitude: String, longitude: String, completion: @escaping (UV?, Error?) -> Void) {
+        isCalled = true
+        
         self.latitude = latitude
         self.longitude = longitude
-        
-        let uv = getUV()
-        
-        completion(uv, error)
+                
+        completion(nextUV, nextError)
     }
 }

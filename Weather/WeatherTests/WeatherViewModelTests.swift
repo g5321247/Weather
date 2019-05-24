@@ -13,19 +13,39 @@ import CoreLocation
 class WeatherViewModelTests: XCTestCase {
 
     var viewModel: WeatherViewModel!
-    var service = MockWeatherService()
+    let service = MockWeatherService()
+    let geocoder = MockCLGeocoder()
     
     override func setUp() {
-        viewModel = WeatherViewModel(service: service, cityName: "London", type: .currentWeather)
+        viewModel = WeatherViewModel(service: service, cityName: "London", type: .currentWeather, geocoder: geocoder)
     }
 
     override func tearDown() {
         viewModel = nil
     }
     
+    // Check Download Function is Called
+    func testDownloadFunctionIfTypeIsCurrentWeather() {
+        viewModel.inputs.checkWeatherCondition()
+        
+        XCTAssertTrue(service.isCalled, "downloadCurrentWeather isn't called")
+    }
+    
+    func testDownloadFunctionIfTypeIsUvValue() {
+        viewModel = WeatherViewModel(service: service, cityName: "London", type: .uvValue, geocoder: geocoder)
+        geocoder.nextLocationString = ("51.50", "-0.13")
+        
+        viewModel.inputs.checkWeatherCondition()
+        
+        XCTAssertTrue(service.isCalled, "downloadUV isn't called")
+    }
+    
     // Current Weather
     func testCurrentWeatherIfHandleSuccess() {
         
+        viewModel.outputs.weather
+        
+        viewModel.inputs.checkWeatherCondition()
     }
     
     // UV
