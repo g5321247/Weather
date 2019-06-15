@@ -17,12 +17,12 @@ protocol URLRequestConvertible {
     var body: Data? { get }
 }
 
-enum Router {
+enum APIModel {
     case currentWeather(String)
     case uvValue(String, String)
 }
 
-extension Router: URLRequestConvertible {
+extension APIModel: URLRequestConvertible {
     
     var domain: String {
         return "https://api.openweathermap.org"        

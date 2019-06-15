@@ -102,6 +102,8 @@ class CLGeocoderExtensionTest: XCTestCase {
         let expectLocationStr = ("51.50", "-0.13")
 
         geocoder.getCoordinateStrFrom(city) { (locationStr, _) in
+            
+            XCTAssert(locationStr != nil, "locationString is nil, please check internet connection")
             XCTAssert(expectLocationStr == locationStr!, "locationString incorrect")
             expect.fulfill()
         }

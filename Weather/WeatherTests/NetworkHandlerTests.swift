@@ -136,7 +136,7 @@ class NetworkHandlerTests: XCTestCase {
         let urlObject = MockURLRequestConvertible()
         
         do {
-            _ = try networkHandler.getURL(model: urlObject)
+            _ = try networkHandler.createURL(model: urlObject)
         } catch {
             let actualError = error as? ConvertError
             XCTAssert(actualError == ConvertError.url)
@@ -149,7 +149,7 @@ class NetworkHandlerTests: XCTestCase {
         urlObject.path = "/data/2.5/weather"
         
         let expectResult = URL(string: "https://api.openweathermap.org/data/2.5/weather")
-        let result = try? networkHandler.getURL(model: urlObject)
+        let result = try? networkHandler.createURL(model: urlObject)
         
         XCTAssert(expectResult == result)
     }
@@ -208,7 +208,7 @@ class NetworkHandlerTests: XCTestCase {
         let urlObject = MockURLRequestConvertible()
         
         do {
-            _ = try networkHandler.getRequest(model: urlObject)
+            _ = try networkHandler.createURLRequest(model: urlObject)
         } catch {
             let actualError = error as? ConvertError
             XCTAssert(actualError == ConvertError.url)
@@ -223,7 +223,7 @@ class NetworkHandlerTests: XCTestCase {
         
         let url = URL(string: "https://api.openweathermap.org/data/2.5/weather?q=London")!
         let expectResult = URLRequest(url: url)
-        let result = try? networkHandler.getRequest(model: urlObject)
+        let result = try? networkHandler.createURLRequest(model: urlObject)
         
         XCTAssert(expectResult == result)
     }
@@ -234,7 +234,7 @@ class NetworkHandlerTests: XCTestCase {
         let expectError = ConvertError.url
         var actualError: ConvertError?
 
-        networkHandler.download(model: urlObject) { (_: UV?, error) in
+        networkHandler.download(apiModel: urlObject) { (_: UV?, error) in
             actualError = error as? ConvertError
         }
         
@@ -255,7 +255,7 @@ class NetworkHandlerTests: XCTestCase {
         
         var acutalModel: Weather?
 
-        networkHandler.download(model: urlObject) { (weather, _) in
+        networkHandler.download(apiModel: urlObject) { (weather, _) in
             acutalModel = weather
         }
 
@@ -272,7 +272,7 @@ class NetworkHandlerTests: XCTestCase {
         var actualError: NetworkError?
         session.nextResponse = nil
         
-        networkHandler.download(model: urlObject) { (_: UV?, error) in
+        networkHandler.download(apiModel: urlObject) { (_: UV?, error) in
             actualError = error as? NetworkError
         }
         

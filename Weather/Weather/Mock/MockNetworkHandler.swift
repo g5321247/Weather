@@ -14,7 +14,7 @@ class MockNetworkHandler: NetworkHandlerSpec {
     var nextError: Error?
     private(set) var isCalled: Bool = false
 
-    func download<T>(model: URLRequestConvertible, completion: @escaping (T?, Error?) -> Void) {
+    func download<T>(apiModel: URLRequestConvertible, completion: @escaping (T?, Error?) -> Void) {
         isCalled = true
         completion(nextResult as? T, nextError)
     }

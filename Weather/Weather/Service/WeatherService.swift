@@ -13,21 +13,15 @@ protocol WeatherServiceSpec {
     func downloadUVValue(latitude: String, longitude: String, completion: @escaping (UV?, Error?) -> Void)
 }
 
-class WeatherService: WeatherServiceSpec {
-
-    private let networkHandler: NetworkHandlerSpec
-
-    init(networkHandler: NetworkHandlerSpec = NetworkHandler()) {
-        self.networkHandler = networkHandler
-    }
+final class WeatherService: BaseService, WeatherServiceSpec {
 
     func downloadWeather(cityName: String, completion: @escaping (Weather?, Error?) -> Void) {
-        let router: Router = .currentWeather(cityName)
-        networkHandler.download(model: router, completion: completion)
+        let api: APIModel = .currentWeather(cityName)
+        download(apiModel: api, completion: completion)
     }
 
     func downloadUVValue(latitude: String, longitude: String, completion: @escaping (UV?, Error?) -> Void) {
-        let router: Router = .uvValue(latitude, longitude)
-        networkHandler.download(model: router, completion: completion)
+        let api: APIModel = .uvValue(latitude, longitude)
+        download(apiModel: api, completion: completion)
     }
 }

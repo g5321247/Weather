@@ -9,7 +9,7 @@
 import Foundation
 
 protocol NetworkHandlerSpec {
-    func download<T: Codable>(model: URLRequestConvertible, completion: @escaping (T?, Error?) -> Void)
+    func download<T: Codable>(apiModel: URLRequestConvertible, completion: @escaping (T?, Error?) -> Void)
     func cancelDownload()
 }
 
@@ -23,9 +23,23 @@ final class NetworkHandler: NetworkHandlerSpec {
         self.session = session
     }
     
-    func download<T: Codable>(model: URLRequestConvertible, completion: @escaping (T?, Error?) -> Void) {
+    func download<T: Codable>(apiModel: URLRequestConvertible, completion: @escaping (T?, Error?) -> Void) {
+        DispatchQueue.main.async {
+            self.downloadOnBackgroundThread(apiModel: apiModel, completion: completion)
+        }
+    }
+    
+    func cancelDownload() {
+        dataTask?.cancel()
+    }
+}
+
+extension NetworkHandler {
+    
+    #warning("新加的, 未測試")
+    func downloadOnBackgroundThread<T: Codable>(apiModel: URLRequestConvertible, completion: @escaping (T?, Error?) -> Void) {
         do {
-            let request = try getRequest(model: model)
+            let request = try createURLRequest(model: apiModel)
             sendRequest(request: request) { [weak self] (data, error) in
                 guard let data = data else {
                     completion(nil, error)
@@ -37,13 +51,6 @@ final class NetworkHandler: NetworkHandlerSpec {
             completion(nil, error)
         }
     }
-    
-    func cancelDownload() {
-        dataTask?.cancel()
-    }
-}
-
-extension NetworkHandler {
     
     func sendRequest(request: URLRequest, completion: @escaping (Data?, Error?) -> Void) {
         dataTask = session.dataTask(with: request) { (data, response, error) in
@@ -84,7 +91,7 @@ extension NetworkHandler {
         }
     }
     
-    func getURL(model: URLRequestConvertible) throws -> URL {
+    func createURL(model: URLRequestConvertible) throws -> URL {
         let uri = model.domain + model.path
         guard let url = URL(string: uri) else {
             throw ConvertError.url
@@ -92,9 +99,9 @@ extension NetworkHandler {
         return url
     }
     
-    func getRequest(model: URLRequestConvertible) throws -> URLRequest {
+    func createURLRequest(model: URLRequestConvertible) throws -> URLRequest {
         do {
-            var url = try getURL(model: model) // url
+            var url = try createURL(model: model) // url
             configureParameters(url: &url, with: model.parameters)  // param: encode + components
             var request = URLRequest(url: url) // request
             request.httpMethod = model.method.rawValue  // method
